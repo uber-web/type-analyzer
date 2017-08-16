@@ -1,0 +1,11 @@
+2016-06-20 - 0.1.0 (394e731)
+394e731 (HEAD -> master, origin/master, origin/HEAD) Move "geometry from string" validation from chart-builder to type-analyzer
+dc7e6f9 (tag: v0.0.2) 0.0.2
+6e82ca3 (tag: v0.0.1) 0.0.1
+
+
+2016-02-04 - 0.0.1 (f16baf0)
+f16baf0 (HEAD -> master) Initial commit, most code is from chart-builder
+4f7af3b (origin/master) initial repository
+
+
