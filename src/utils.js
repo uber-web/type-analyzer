@@ -45,8 +45,12 @@ var mm = '\\d{2}';
 var Z = '(\\+|-)\\d{1,2}:\\d{1,2}';
 var ZZ = '(\\+|-)(\\d{4}|\\d{1,2}:\\d{2})';
 var a = '(am|pm)';
+var X = '\\d{12,13}' // 1513629453477
+var x = '\\d{9,10}(\\.\\d{1,3})?' // 123456789 123456789.123
 
 var TIME_FORMAT_STRINGS = [
+  'X',
+  'x',
   'H:m',
   'HH:mmZ',
   'h:m a',
@@ -58,6 +62,8 @@ var TIME_FORMAT_STRINGS = [
 ].reverse();
 // the reverse is important to put the more specific regexs higher in the order
 var TIME_FORMAT_REGEX_STRINGS = [
+  X,
+  x,
   H + ':' + m,
   HH + ':' + mm + Z,
   h + ':' + m + ' ' + a,
@@ -80,7 +86,7 @@ var ALL_TIME_FORMAT_REGEX_STR = union(Object.keys(TIME_FORMAT_REGEX_MAP));
 var ALL_TIME_FORMAT_REGEX = new RegExp('^' + ALL_TIME_FORMAT_REGEX_STR + '$', 'i');
 
 // GENERATE ALL DATE FORMATS
-var YYYY = '\\d{2, 4}';
+var YYYY = '\\d{2,4}';
 var M = '\\d{1,2}';
 var MMM = union([
   'Jan',
