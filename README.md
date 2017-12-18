@@ -31,7 +31,7 @@ row-column formatted dataset. We support the following datatypes:
 Usage is super simple, simply call computeColMeta on your data like so
 
 ```js
-var Analyzer = require('@uber/type-analyzer').Analyzer;
+var Analyzer = require('type-analyzer').Analyzer;
 
 var colMeta = Analyzer.computeColMeta(data);
 ```
@@ -41,7 +41,7 @@ is identified as a column of strings, type-analyzer's got you. Simply pass an
 array of rules:
 
 ```js
-var Analyzer = require('@uber/type-analyzer').Analyzer;
+var Analyzer = require('type-analyzer').Analyzer;
 
 var colMeta = Analyzer.computeColMeta(data, [{name: 'id', dataType: 'STRING'}]);
 // or

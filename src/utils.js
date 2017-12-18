@@ -80,7 +80,7 @@ var ALL_TIME_FORMAT_REGEX_STR = union(Object.keys(TIME_FORMAT_REGEX_MAP));
 var ALL_TIME_FORMAT_REGEX = new RegExp('^' + ALL_TIME_FORMAT_REGEX_STR + '$', 'i');
 
 // GENERATE ALL DATE FORMATS
-var YYYY = '\\d{4}';
+var YYYY = '\\d{2, 4}';
 var M = '\\d{1,2}';
 var MMM = union([
   'Jan',
