@@ -45,6 +45,12 @@ test('Analyzer: date validator', function t(assert) {
     {type: 'DATE', format: 'M/D/YYYY'},
     'Inteprets dates formatted as M/D/YYYY correctly');
 
+  arr = ['1/1/15', '11/2/98', '1/31/00', '12/31/17'].map(mapArr);
+  result = Analyzer.computeColMeta(arr)[0];
+  assert.deepEqual({type: result.type, format: result.format},
+    {type: 'DATE', format: 'M/D/YYYY'},
+    'Inteprets dates formatted as M/D/YYYY correctly');
+
   arr = [
     'January 01, 2015', 'January 02, 2015', 'January 03, 2015'
   ].map(mapArr);
@@ -91,6 +97,18 @@ test('Analyzer: date validator', function t(assert) {
   assert.deepEqual({type: result.type, format: result.format},
     {type: 'TIME', format: 'h:m a'},
     'Inteprets dates formatted as h:m a correctly');
+
+  arr = ['113629453.122', '1536294531', '113629453.12'].map(mapArr);
+  result = Analyzer.computeColMeta(arr)[0];
+  assert.deepEqual({type: result.type, format: result.format},
+    {type: 'TIME', format: 'x'},
+    'Inteprets unix time in seconds formatted as x correctly');
+
+  arr = ['1513629453477', '913629453477', '1313629453477'].map(mapArr);
+  result = Analyzer.computeColMeta(arr)[0];
+  assert.deepEqual({type: result.type, format: result.format},
+    {type: 'TIME', format: 'X'},
+    'Inteprets unix time in milliseconds formatted as X correctly');
 
   // date time formats:
   arr = ['2015-1-1 1:1:1', '2015-1-2 2:2:2', '2015-1-3 3:3:3'].map(mapArr);
