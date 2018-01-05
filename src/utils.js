@@ -1,3 +1,4 @@
+// @flow
 // Copyright (c) 2017 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,10 +19,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-'use strict';
-
-var CONSTANT = require('./constant');
-var RegexList = require('./regex-list');
+import {NULL, DATA_TYPES, BOOLEAN_TRUE_VALUES, BOOLEAN_FALSE_VALUES} from './constant';
+import RegexList from './regex-list';
 
 /* eslint-disable max-len*/
 /**
@@ -34,25 +33,25 @@ function union(arr) {
 }
 
 // GENERATE ALL OF THE TIME REGEXES
-var HH = '\\d{1,2}';
-var H = '\\d{1,2}';
-var h = '\\d{1,2}';
-var m = '\\d{1,2}';
-var s = '\\d{1,2}';
-var ss = '\\d{2}';
-var SSSS = '(\\.\\d{1,6})';
-var mm = '\\d{2}';
-var Z = '(\\+|-)\\d{1,2}:\\d{1,2}';
-var ZZ = '(\\+|-)(\\d{4}|\\d{1,2}:\\d{2})';
-var a = '(am|pm)';
+const HH = '\\d{1,2}';
+const H = '\\d{1,2}';
+const h = '\\d{1,2}';
+const m = '\\d{1,2}';
+const s = '\\d{1,2}';
+const ss = '\\d{2}';
+const SSSS = '(\\.\\d{1,6})';
+const mm = '\\d{2}';
+const Z = '(\\+|-)\\d{1,2}:\\d{1,2}';
+const ZZ = '(\\+|-)(\\d{4}|\\d{1,2}:\\d{2})';
+const a = '(am|pm)';
 
 // 1513629453477
-var X = '\\b\\d{12,13}\\b';
+const X = '\\b\\d{12,13}\\b';
 
 // 123456789 123456789.123
-var x = '\\b\\d{9,10}(\\.\\d{1,3})?\\b';
+const x = '\\b\\d{9,10}(\\.\\d{1,3})?\\b';
 
-var TIME_FORMAT_STRINGS = [
+const TIME_FORMAT_STRINGS = [
   'X',
   'x',
   'H:m',
@@ -65,7 +64,7 @@ var TIME_FORMAT_STRINGS = [
   'HH:mm:ss.SSSSZZ'
 ].reverse();
 // the reverse is important to put the more specific regexs higher in the order
-var TIME_FORMAT_REGEX_STRINGS = [
+const TIME_FORMAT_REGEX_STRINGS = [
   X,
   x,
   H + ':' + m,
@@ -80,19 +79,19 @@ var TIME_FORMAT_REGEX_STRINGS = [
 
 // something like:
 // {'(\d{2)....': 'M-D-YYYY'}
-var TIME_FORMAT_REGEX_MAP = TIME_FORMAT_STRINGS
+const TIME_FORMAT_REGEX_MAP = TIME_FORMAT_STRINGS
   .reduce(function generateRegexMap(timeFormats, str, index) {
     timeFormats[TIME_FORMAT_REGEX_STRINGS[index]] = str;
     return timeFormats;
   }, {});
 
-var ALL_TIME_FORMAT_REGEX_STR = union(Object.keys(TIME_FORMAT_REGEX_MAP));
-var ALL_TIME_FORMAT_REGEX = new RegExp('^' + ALL_TIME_FORMAT_REGEX_STR + '$', 'i');
+const ALL_TIME_FORMAT_REGEX_STR = union(Object.keys(TIME_FORMAT_REGEX_MAP));
+const ALL_TIME_FORMAT_REGEX = new RegExp('^' + ALL_TIME_FORMAT_REGEX_STR + '$', 'i');
 
 // GENERATE ALL DATE FORMATS
-var YYYY = '\\d{2,4}';
-var M = '\\d{1,2}';
-var MMM = union([
+const YYYY = '\\d{2,4}';
+const M = '\\d{1,2}';
+const MMM = union([
   'Jan',
   'Feb',
   'Mar',
@@ -106,7 +105,7 @@ var MMM = union([
   'Nov',
   'Dec'
 ]);
-var MMMM = union([
+const MMMM = union([
   'January',
   'February',
   'March',
@@ -120,11 +119,11 @@ var MMMM = union([
   'November',
   'December'
 ]);
-var D = '\\d{1,2}';
-var DD = '\\d{2}';
-var Do = '\\d{1,2}(st|nd|rd|th)';
+const D = '\\d{1,2}';
+const DD = '\\d{2}';
+const Do = '\\d{1,2}(st|nd|rd|th)';
 
-var dateFormatRegexStrings = [
+const dateFormatRegexStrings = [
   YYYY + '-' + M + '-' + D,
   M + '\\/' + D + '\\/' + YYYY,
   MMMM + ' ' + DD + ', ' + YYYY,
@@ -132,7 +131,7 @@ var dateFormatRegexStrings = [
   MMMM + ' ' + Do + ', ' + YYYY,
   MMM + ' ' + Do + ', ' + YYYY
 ];
-var dateFormatStrings = [
+const dateFormatStrings = [
   'YYYY-M-D',
   'M/D/YYYY',
   'MMMM DD, YYYY',
@@ -140,11 +139,11 @@ var dateFormatStrings = [
   'MMMM Do, YYYY',
   'MMM Do, YYYY'
 ];
-var DATE_FORMAT_REGEX = new RegExp('^' + union(dateFormatRegexStrings) + '$', 'i');
+const DATE_FORMAT_REGEX = new RegExp('^' + union(dateFormatRegexStrings) + '$', 'i');
 
 // something like:
 // {'(\d{2)....': 'M-D-YYYY'}
-var DATE_FORMAT_REGEX_MAP = dateFormatStrings
+const DATE_FORMAT_REGEX_MAP = dateFormatStrings
   .reduce(function generateRegexMap(dateFormats, str, index) {
     dateFormats[dateFormatRegexStrings[index]] = str;
     return dateFormats;
@@ -153,11 +152,11 @@ var DATE_FORMAT_REGEX_MAP = dateFormatStrings
 // COMPUTE THEIR CROSS PRODUCT
 
 // {'SOME HELLISH REGEX': 'YYYY HH:MM:SS'}
-var DATE_TIME_MAP = Object.keys(DATE_FORMAT_REGEX_MAP)
+const DATE_TIME_MAP = Object.keys(DATE_FORMAT_REGEX_MAP)
   .reduce(function reduceDate(dateTimes, dateRegex) {
-    var dateStr = DATE_FORMAT_REGEX_MAP[dateRegex];
+    const dateStr = DATE_FORMAT_REGEX_MAP[dateRegex];
     Object.keys(TIME_FORMAT_REGEX_MAP).forEach(function loopAcrosTimes(timeRegex) {
-      var timeStr = TIME_FORMAT_REGEX_MAP[timeRegex];
+      const timeStr = TIME_FORMAT_REGEX_MAP[timeRegex];
       dateTimes[dateRegex + ' ' + timeRegex] = dateStr + ' ' + timeStr;
       dateTimes[dateRegex + 'T' + timeRegex] = dateStr + 'T' + timeStr;
       dateTimes[timeRegex + 'T' + dateRegex] = timeStr + 'T' + dateStr;
@@ -165,7 +164,7 @@ var DATE_TIME_MAP = Object.keys(DATE_FORMAT_REGEX_MAP)
     });
     return dateTimes;
   }, {});
-var ALL_DATE_TIME_REGEX = new RegExp(union(Object.keys(DATE_TIME_MAP)));
+const ALL_DATE_TIME_REGEX = new RegExp(union(Object.keys(DATE_TIME_MAP)));
 
 /**
 * Generate a function to discover which time format a value is
@@ -174,13 +173,13 @@ var ALL_DATE_TIME_REGEX = new RegExp(union(Object.keys(DATE_TIME_MAP)));
 * @return {Func} to the format checker
 */
 function whichFormatGenerator(formatRegex, regexMap) {
-  return function whichFormat(value) {
+  return function whichFormat(value: string) {
     if (formatRegex.test(value)) {
-      var regexes = Object.keys(regexMap);
-      for (var i = 0; i < regexes.length; i++) {
-        var regex = regexes[i];
-        var format = regexMap[regex];
-        var newRegex = new RegExp(regex);
+      const regexes = Object.keys(regexMap);
+      for (let i = 0; i < regexes.length; i++) {
+        const regex = regexes[i];
+        const format = regexMap[regex];
+        const newRegex = new RegExp(regex);
         if (newRegex.test(value)) {
           return format;
         }
@@ -190,59 +189,50 @@ function whichFormatGenerator(formatRegex, regexMap) {
   };
 }
 
-var whichFormatTime = whichFormatGenerator(ALL_TIME_FORMAT_REGEX, TIME_FORMAT_REGEX_MAP);
-var whichFormatDate = whichFormatGenerator(DATE_FORMAT_REGEX, DATE_FORMAT_REGEX_MAP);
-var whichFormatDateTime = whichFormatGenerator(ALL_DATE_TIME_REGEX, DATE_TIME_MAP);
+export const whichFormatTime = whichFormatGenerator(ALL_TIME_FORMAT_REGEX, TIME_FORMAT_REGEX_MAP);
+export const whichFormatDate = whichFormatGenerator(DATE_FORMAT_REGEX, DATE_FORMAT_REGEX_MAP);
+export const whichFormatDateTime = whichFormatGenerator(ALL_DATE_TIME_REGEX, DATE_TIME_MAP);
 
-var Utils = {
-  buildRegexCheck: function buildRegexCheck(regexId) {
-    return function check(value) {
-      return RegexList[regexId].test(value.toString());
-    };
-  },
+export function buildRegexCheck(regexId: $Keys<typeof RegexList>) {
+  return function check(value: string) {
+    return RegexList[regexId].test(value.toString());
+  };
+}
 
-  detectTimeFormat: function detectTimeFormat(value, type) {
-    switch (type) {
-    case CONSTANT.DATA_TYPES.DATETIME:
-      return whichFormatDateTime(value);
-    case CONSTANT.DATA_TYPES.DATE:
-    default:
-      return whichFormatDate(value);
-    case CONSTANT.DATA_TYPES.TIME:
-      return whichFormatTime(value);
+export function detectTimeFormat(value: string, type: $Values<typeof DATA_TYPES>) {
+  switch (type) {
+  case DATA_TYPES.DATETIME:
+    return whichFormatDateTime(value);
+  case DATA_TYPES.DATE:
+  default:
+    return whichFormatDate(value);
+  case DATA_TYPES.TIME:
+    return whichFormatTime(value);
+  }
+}
+
+export function findFirstNonNullValue(data: Object[], column) {
+  for (let i = 0; i < data.length; i++) {
+    if (data[i][column] !== null && data[i][column] !== NULL) {
+      return data[i][column];
     }
-  },
+  }
+  return null;
+}
 
-  findFirstNonNullValue: function findFirstNonNullValue(data, column) {
-    for (var i = 0; i < data.length; i++) {
-      if (data[i][column] !== null && data[i][column] !== CONSTANT.NULL) {
-        return data[i][column];
-      }
-    }
-    return null;
-  },
+export function isBoolean(value: mixed) {
+  return BOOLEAN_TRUE_VALUES
+    .concat(BOOLEAN_FALSE_VALUES)
+    .indexOf(String(value).toLowerCase()) > -1;
+}
 
-  isBoolean: function isBoolean(value) {
-    return CONSTANT.BOOLEAN_TRUE_VALUES
-      .concat(CONSTANT.BOOLEAN_FALSE_VALUES)
-      .indexOf(String(value).toLowerCase()) > -1;
-  },
+export function isGeographic(value: mixed) {
+  return Boolean(value) && typeof value === 'object' && value !== null &&
+      value.hasOwnProperty('type') && value.hasOwnProperty('coordinates');
+}
 
-  isGeographic: function isGeographic(value) {
-    return Boolean(value) && typeof value === 'object' &&
-        value.hasOwnProperty('type') && value.hasOwnProperty('coordinates');
-  },
-
-  // string types
-  isString: function isString(value) {
-    return typeof value === 'string';
-  },
-
-  whichFormatTime: whichFormatGenerator(ALL_TIME_FORMAT_REGEX, TIME_FORMAT_REGEX_MAP),
-  whichFormatDate: whichFormatGenerator(DATE_FORMAT_REGEX, DATE_FORMAT_REGEX_MAP),
-  whichFormatDateTime: whichFormatGenerator(ALL_DATE_TIME_REGEX, DATE_TIME_MAP)
-};
+export function isString(value: mixed) {
+  return typeof value === 'string';
+}
 
 /* eslint-enable max-len*/
-
-module.exports = Utils;

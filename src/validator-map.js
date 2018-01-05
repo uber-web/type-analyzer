@@ -1,3 +1,4 @@
+// @flow
 // Copyright (c) 2017 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,13 +19,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-'use strict';
+import {DATA_TYPES} from './constant';
+import Utils from './utils';
 
-var CONSTANT = require('./constant');
-var Utils = require('./utils');
-
-var DATA_TYPES = CONSTANT.DATA_TYPES;
-var VALIDATOR_MAP = {};
+const VALIDATOR_MAP = {};
 
 // geometry
 VALIDATOR_MAP[DATA_TYPES.GEOMETRY] = Utils.isGeographic;
