@@ -31,12 +31,28 @@ test('Analyzer: Geo check', function t(assert) {
   var arrMeta = Analyzer.computeColMeta(arr);
   var expectedForArr = [
     {
-      key: 'geometry',
-      label: 'geometry',
+      key: 'wkt',
+      label: 'wkt',
       type: 'GEOMETRY_FROM_STRING',
       category: 'GEOMETRY',
       format: '',
       geoType: 'LINESTRING'
+    },
+    {
+      key: 'feature',
+      label: 'feature',
+      type: 'PAIR_GEOMETRY_FROM_STRING',
+      category: 'GEOMETRY',
+      format: '',
+      geoType: 'POINT'
+    },
+    {
+      key: 'geojson',
+      label: 'geojson',
+      type: 'PAIR_GEOMETRY_FROM_STRING',
+      category: 'GEOMETRY',
+      format: '',
+      geoType: 'POINT'
     },
     {
       key: 'treatment_group_key',
@@ -54,7 +70,7 @@ test('Analyzer: Geo check', function t(assert) {
     }
   ];
 
-  assert.deepEqual(expectedForArr, arrMeta, 'should get geometry from string correct');
+  assert.deepEqual(arrMeta, expectedForArr, 'should get geometry from string correct');
 
   var geoJsonArr = [
     {col1: {'type': 'Point', 'coordinates': [102.0, 0.5]}},
@@ -124,7 +140,7 @@ test('Analyzer: geo from string validator', function t(assert) {
     );
   });
 
-  arr = ['-45.03,168.66', '-45.03,168.66', '-45.0304885022762,168.660729378619']
+  arr = ['-45.03, 168.66', '[-45.03,168.66]', '[-45.0304885022762, 168.660729378619]']
     .map(mapArr);
   assert.equal(Analyzer.computeColMeta(arr)[0].type,
     'PAIR_GEOMETRY_FROM_STRING',
@@ -209,9 +225,8 @@ var coordData = require('./coord-data.json');
 
 test('Analyzer: coords', function t(assert) {
   var analyzed = Analyzer.computeColMeta(coordData);
-  assert.deepEqual(analyzed, [
-    {category: 'GEOMETRY', format: '', geoType: 'POINT', key: 'coordinates', label: 'coordinates', type: 'PAIR_GEOMETRY_FROM_STRING'}
-  ], 'Handle data formatted as pairs of coordinates correctly');
+  var expected = [{category: 'GEOMETRY', format: '', geoType: 'POINT', key: 'coordinates', label: 'coordinates', type: 'PAIR_GEOMETRY_FROM_STRING'}];
+  assert.deepEqual(expected, analyzed, 'Handle data formatted as pairs of coordinates correctly');
   assert.end();
 });
 /* eslint-enable max-len */

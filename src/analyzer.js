@@ -144,7 +144,7 @@ Analyzer.computeColMeta = function computeColMeta(data, analyzerRules) {
       if (geoSample === null) {
         return res;
       }
-      colMeta.geoType = geoSample.type.toUpperCase();
+      colMeta.geoType = typeof geoSample.type === 'string' ? geoSample.type.toUpperCase() : null;
     }
     if (type === CONSTANT.DATA_TYPES.GEOMETRY_FROM_STRING) {
       var geoStringSample = Utils.findFirstNonNullValue(data, columnName);

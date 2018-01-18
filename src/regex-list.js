@@ -51,8 +51,9 @@ var RegexList = {
   // reference: https://en.wikipedia.org/wiki/Well-known_text
   isStringGeometry:
     /^(POINT|LINESTRING|POLYGON|MULTIPOINT|MULTILINESTRING|MULTIPOLYGON)/,
+
   isPairwisePointGeometry:
-    /(\+|\-)?\d*\.\d*,(\+|\-)?\d*\.\d*/
+    /(\+|\-)?\d*\.\d*,( )?(\+|\-)?\d*\.\d*/
 };
 
 module.exports = RegexList;
