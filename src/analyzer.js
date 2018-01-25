@@ -1,3 +1,4 @@
+// @flow
 // Copyright (c) 2017 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,19 +21,22 @@
 
 'use strict';
 
-var CONSTANT = require('./constant');
-var VALIDATOR_MAP = require('./validator-map');
-var Utils = require('./utils');
+import CONSTANT from './constant';
+import VALIDATOR_MAP from './validator-map';
+import {
+  findFirstNonNullValue,
+  detectTimeFormat
+} from './utils';
 
-var NUMBER_OF_ALLOWED_HITS = 3;
+const NUMBER_OF_ALLOWED_HITS = 3;
 
-var Analyzer = {};
+const Analyzer = {};
 
-Analyzer._category = function _category(colType) {
+function _category(colType) {
   return CONSTANT.TYPES_TO_CATEGORIES[colType] || CONSTANT.CATEGORIES.DIMENSION;
-};
+}
 
-var VALIDATOR_CONSIDERS_EMPTY_STRING_NULL = {
+const VALIDATOR_CONSIDERS_EMPTY_STRING_NULL = {
   PAIR_GEOMETRY_FROM_STRING: true,
   GEOMETRY_FROM_STRING: true,
   NUMBER: true
@@ -59,14 +63,14 @@ function valueIsNullForValidator(value, validatorName) {
 function buildValidatorFinder(data, columnName) {
   return function findTypeFromValidators(validatorName) {
     // you get three strikes until we dont think you are this type
-    var nonNullData = data.filter(function iterator(row) {
-      var value = row[columnName];
+    const nonNullData = data.filter(function iterator(row) {
+      const value = row[columnName];
       return !valueIsNullForValidator(value, validatorName);
     });
-    var strikes = Math.min(NUMBER_OF_ALLOWED_HITS, nonNullData.length);
-    var hits = 0;
+    const strikes = Math.min(NUMBER_OF_ALLOWED_HITS, nonNullData.length);
+    const hits = 0;
     nonNullData.some(function iterateAcrossData(row) {
-      var value = row[columnName];
+      const value = row[columnName];
       if (Boolean(VALIDATOR_MAP[validatorName](value)) === false) {
         strikes -= 1;
       } else {
@@ -102,36 +106,36 @@ function getTypeFromRules(analyzerRules, columnName) {
 * @param {Object} analyzerRules - regexs describing column overrides
 * @return {Object} column metadata
 **/
-Analyzer.computeColMeta = function computeColMeta(data, analyzerRules) {
+function computeColMeta(data: Object[], analyzerRules) {
   if (!data || Object.keys(data).length === 0) {
     return [];
   }
-  var _columns = Object.keys(data[0]);
+  const _columns = Object.keys(data[0]);
   /* eslint-disable max-statements */
   return _columns.reduce(function iterator(res, columnName) {
-    var format = '';
+    let format = '';
     // First try to get the column from the rules
-    var type = getTypeFromRules(analyzerRules, columnName);
+    let type = getTypeFromRules(analyzerRules, columnName);
     // If it's not there then try to infer the type
     if (!type) {
       type = CONSTANT.VALIDATORS.find(buildValidatorFinder(data, columnName));
     }
     // if theres still no type, dump this column
-    var category = Analyzer._category(type);
+    const category = _category(type);
     if (!type) {
       return res;
     }
     // if its a time, detect and record the time
     if (type && CONSTANT.TIME_VALIDATORS.indexOf(type) !== -1) {
       // Find the first non-null value.
-      var sample = Utils.findFirstNonNullValue(data, columnName);
+      const sample = findFirstNonNullValue(data, columnName);
       if (sample === null) {
         return res;
       }
-      format = Utils.detectTimeFormat(sample, type);
+      format = detectTimeFormat(sample, type);
     }
 
-    var colMeta = {
+    const colMeta = {
       key: columnName,
       label: columnName,
       type: type,
@@ -140,14 +144,14 @@ Analyzer.computeColMeta = function computeColMeta(data, analyzerRules) {
     };
 
     if (type === CONSTANT.DATA_TYPES.GEOMETRY) {
-      var geoSample = Utils.findFirstNonNullValue(data, columnName);
+      const geoSample = findFirstNonNullValue(data, columnName);
       if (geoSample === null) {
         return res;
       }
       colMeta.geoType = typeof geoSample.type === 'string' ? geoSample.type.toUpperCase() : null;
     }
     if (type === CONSTANT.DATA_TYPES.GEOMETRY_FROM_STRING) {
-      var geoStringSample = Utils.findFirstNonNullValue(data, columnName);
+      const geoStringSample = findFirstNonNullValue(data, columnName);
       if (geoStringSample === null) {
         return res;
       }
@@ -161,5 +165,3 @@ Analyzer.computeColMeta = function computeColMeta(data, analyzerRules) {
   }, []);
 };
 /* eslint-enable max-statements */
-
-module.exports = Analyzer;

@@ -1,0 +1,13 @@
+[ignore]
+<PROJECT_ROOT>/node_modules/es-abstract/.*
+<PROJECT_ROOT>/node_modules/has/.*
+
+[include]
+
+[libs]
+
+[lints]
+
+[options]
+
+[strict]

@@ -1,3 +1,4 @@
+// @flow
 // Copyright (c) 2017 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,7 +21,7 @@
 
 'use strict';
 
-var RegexList = {
+export const RegexList = {
   // accepts: 10, 2.3, +4,000, -5,023.234, 2.3e+2, 4,234.56e-2, $23,203, 23.45%
   isNumber: /^(\+|\-)?\$?[\d,]*\.?\d+((e|E)(\+|\-)\d+)?%?$/,
 
@@ -55,5 +56,3 @@ var RegexList = {
   isPairwisePointGeometry:
     /(\+|\-)?\d*\.\d*,( )?(\+|\-)?\d*\.\d*/
 };
-
-module.exports = RegexList;
