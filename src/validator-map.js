@@ -41,10 +41,14 @@ VALIDATOR_MAP[DATA_TYPES.CURRENCY] = Utils.buildRegexCheck('isCurrency');
 VALIDATOR_MAP[DATA_TYPES.PERCENT] = Utils.buildRegexCheck('isPercentage');
 
 // times
-VALIDATOR_MAP[DATA_TYPES.DATETIME] = Utils.whichFormatDateTime;
+VALIDATOR_MAP[DATA_TYPES.DATETIME] = Utils.buildRegexCheck('isDateTime');
 
-VALIDATOR_MAP[DATA_TYPES.DATE] = Utils.whichFormatDate;
-VALIDATOR_MAP[DATA_TYPES.TIME] = Utils.whichFormatTime;
+VALIDATOR_MAP[DATA_TYPES.DATE] = Utils.buildRegexCheck('isDate');
+VALIDATOR_MAP[DATA_TYPES.TIME] = Utils.buildRegexCheck('isTime');
+// VALIDATOR_MAP[DATA_TYPES.DATETIME] = Utils.whichFormatDateTime;
+//
+// VALIDATOR_MAP[DATA_TYPES.DATE] = Utils.whichFormatDate;
+// VALIDATOR_MAP[DATA_TYPES.TIME] = Utils.whichFormatTime;
 
 // numbers:
 // 1, 2, 3

@@ -19,6 +19,7 @@
 // THE SOFTWARE.
 
 'use strict';
+var TimeRegex = require('./time-regex');
 
 var RegexList = {
   // accepts: 10, 2.3, +4,000, -5,023.234, 2.3e+2, 4,234.56e-2, $23,203, 23.45%
@@ -46,6 +47,12 @@ var RegexList = {
   // maybe we should import a list of cities we have.
   // reference: http://stackoverflow.com/a/25677072
   isCity: /^([a-zA-Z\u0080-\u024F]+(?:. |-| |'))*[a-zA-Z\u0080-\u024F]*$/,
+
+  isTime: TimeRegex.ALL_TIME_FORMAT_REGEX,
+
+  isDate: TimeRegex.DATE_FORMAT_REGEX,
+
+  isDateTime: TimeRegex.ALL_DATE_TIME_REGEX,
 
   // accepts: WKT string types
   // reference: https://en.wikipedia.org/wiki/Well-known_text
