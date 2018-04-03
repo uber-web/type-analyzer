@@ -23,6 +23,7 @@
 var test = require('./test-utils').test;
 
 var whichFormatDate = require('../src/utils').whichFormatDate;
+var whichFormatDateTime = require('../src/utils').whichFormatDateTime;
 
 test('#whichFormatDate', function t(assert) {
   assert.equals(whichFormatDate('2015-1-1'), 'YYYY-M-D');
@@ -33,5 +34,10 @@ test('#whichFormatDate', function t(assert) {
   assert.equals(whichFormatDate('January 3rd, 2012'), 'MMMM Do, YYYY');
   assert.equals(whichFormatDate('Jan 2nd, 2012'), 'MMM Do, YYYY');
   assert.equals(whichFormatDate('Jan 22nd, 2012'), 'MMM Do, YYYY');
+  assert.end();
+});
+
+test('#whichFormatDateTime', function t(assert) {
+  assert.equals(whichFormatDateTime('1967/07/19 20:49:08.07'), 'YYYY/M/D HH:mm:ss.SSSS');
   assert.end();
 });
