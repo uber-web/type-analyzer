@@ -57,8 +57,8 @@ var CONSTANT = {
     MEASURE: 'MEASURE'
   },
 
-  BOOLEAN_TRUE_VALUES: ['true', 'yes', '1'],
-  BOOLEAN_FALSE_VALUES: ['false', 'no', '0'],
+  BOOLEAN_TRUE_VALUES: ['true', 'yes'],
+  BOOLEAN_FALSE_VALUES: ['false', 'no'],
 
   NULL: 'NULL'
 };
