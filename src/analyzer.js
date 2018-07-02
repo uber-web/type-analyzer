@@ -45,7 +45,7 @@ var VALIDATOR_CONSIDERS_EMPTY_STRING_NULL = {
 * @return {Boolean} whether or not the current value is null
 **/
 function valueIsNullForValidator(value, validatorName) {
-  if (value === null || value === CONSTANT.NULL) {
+  if (value === null || value === CONSTANT.NULL || typeof value === 'undefined') {
     return true;
   }
 
