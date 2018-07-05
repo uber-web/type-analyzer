@@ -47,15 +47,15 @@ test('Analyzer: boolean validator', function t(assert) {
 
   arr = [1, 0, 1, 0, 1, 0].map(mapArr);
   assert.equal(Analyzer.computeColMeta(arr)[0].type, 'INT',
-    'correctly inteprets ones and zeros as int, not booleans');
+    'Inteprets ones and zeros as int, not booleans');
 
   arr = ['true', 'false', 'true', 'false', 'true', 'false'].map(mapArr);
   assert.equal(Analyzer.computeColMeta(arr)[0].type, 'BOOLEAN',
-    'correctly inteprets true and false strings as booleans');
+    'Inteprets true and false strings as booleans');
 
   arr = ['yes', 'no', 'yes', 'no', 'yes', 'no'].map(mapArr);
   assert.equal(Analyzer.computeColMeta(arr)[0].type, 'BOOLEAN',
-    'correctly inteprets yes and no strings as booleans');
+    'Inteprets yes and no strings as booleans');
 
   assert.end();
 });
