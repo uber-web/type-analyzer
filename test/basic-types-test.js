@@ -25,42 +25,43 @@ var test = require('./test-utils').test;
 var Analyzer = require('../').Analyzer;
 var EXAMPLE_STRING_NUMBER = require('./example-data').EXAMPLE_STRING_NUMBER;
 
-test('Analyzer: default', function t(assert) {
+function mapArr(d) {
+  return {col: d};
+}
+
+test('Analyzer: basic functionality', function t(assert) {
   assert.deepEqual(Analyzer.computeColMeta([]), [],
     'doesnt freak out when you hand it empty data');
   assert.deepEqual(Analyzer.computeColMeta(undefined), [],
     'doesnt freak out when you hand it nothing');
+
+  var arr = [1, null, '3', undefined, -5].map(mapArr);
+  assert.deepEqual(Analyzer.computeColMeta(arr)[0].type, 'INT',
+    'doesnt freak out when you hand it nulls and undefineds');
+
   assert.end();
 });
 
 test('Analyzer: boolean validator', function t(assert) {
-
   var arr = [];
-  var mapArr = function mapArr(d) {
-    return {col: d};
-  };
 
   arr = [1, 0, 1, 0, 1, 0].map(mapArr);
   assert.equal(Analyzer.computeColMeta(arr)[0].type, 'INT',
-    'correctly inteprets ones and zeros as int');
+    'Inteprets ones and zeros as int, not booleans');
 
   arr = ['true', 'false', 'true', 'false', 'true', 'false'].map(mapArr);
   assert.equal(Analyzer.computeColMeta(arr)[0].type, 'BOOLEAN',
-    'correctly inteprets true and false strings as booleans');
+    'Inteprets true and false strings as booleans');
 
   arr = ['yes', 'no', 'yes', 'no', 'yes', 'no'].map(mapArr);
   assert.equal(Analyzer.computeColMeta(arr)[0].type, 'BOOLEAN',
-    'correctly inteprets yes and no strings as booleans');
+    'Inteprets yes and no strings as booleans');
 
   assert.end();
 });
 
 test('Analyzer: number validator', function t(assert) {
-
   var arr = [];
-  var mapArr = function mapArr(d) {
-    return {col: d};
-  };
 
   arr = [1, '222,222', '-333,333,333', -4, '+5,000'].map(mapArr);
   assert.equal(Analyzer.computeColMeta(arr)[0].type, 'INT',
@@ -101,11 +102,8 @@ test('Analyzer: number validator', function t(assert) {
 });
 
 test('Analyzer: string validator', function t(assert) {
-
   var arr = [];
-  var mapArr = function mapArr(d) {
-    return {col: d};
-  };
+
   [
     'Aasdaaaa',
     'Bbdsabbb',
