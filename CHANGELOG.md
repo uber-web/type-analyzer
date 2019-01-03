@@ -16,7 +16,7 @@ Each version should:
 Ref: http://keepachangelog.com/en/0.3.0/
 -->
 
-#### [0.2.1] - Jan 03 2019 (f581c65)
+#### [0.2.1] - Jan 03 2019 (c6fb704)
 4c2a767 Add CHANGELOG.md
 f676778 Don't attempt to analyze missing columns.
 94c97a9 Correct use of 'correctly'
