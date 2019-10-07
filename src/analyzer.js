@@ -17,7 +17,6 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 'use strict';
 
 var CONSTANT = require('./constant');
@@ -39,13 +38,17 @@ var VALIDATOR_CONSIDERS_EMPTY_STRING_NULL = {
 };
 
 /**
-* Check if a given value is a null for a validator
-* @param {String} value - value to be checked if null
-* @param {String} validatorName - the name of the current validation function
-* @return {Boolean} whether or not the current value is null
-**/
+ * Check if a given value is a null for a validator
+ * @param {String} value - value to be checked if null
+ * @param {String} validatorName - the name of the current validation function
+ * @return {Boolean} whether or not the current value is null
+ **/
 function valueIsNullForValidator(value, validatorName) {
-  if (value === null || value === CONSTANT.NULL || typeof value === 'undefined') {
+  if (
+    value === null ||
+    value === CONSTANT.NULL ||
+    typeof value === 'undefined'
+  ) {
     return true;
   }
 
@@ -63,20 +66,24 @@ function buildValidatorFinder(data, columnName) {
       var value = row[columnName];
       return !valueIsNullForValidator(value, validatorName);
     });
+
+    var validator = VALIDATOR_MAP[validatorName];
     var strikes = Math.min(NUMBER_OF_ALLOWED_HITS, nonNullData.length);
     var hits = 0;
     nonNullData.some(function iterateAcrossData(row) {
-      var value = row[columnName];
-      if (Boolean(VALIDATOR_MAP[validatorName](value)) === false) {
-        strikes -= 1;
+      var isValueValid = Boolean(validator(row[columnName]));
+      if (isValueValid) {
+        hits++;
       } else {
-        hits += 1;
+        strikes--;
       }
+
       if (strikes <= 0) {
         return true;
       }
       return false;
     });
+
     return strikes > 0 && hits > 0;
   };
 }
@@ -97,24 +104,38 @@ function getTypeFromRules(analyzerRules, columnName) {
 }
 
 /**
-* Generate metadata about columns in a dataset
-* @param {Object} data - data for which meta will be generated
-* @param {Object} analyzerRules - regexs describing column overrides
-* @return {Object} column metadata
-**/
-Analyzer.computeColMeta = function computeColMeta(data, analyzerRules) {
+ * Generate metadata about columns in a dataset
+ * @param {Object} data - data for which meta will be generated
+ * @param {Object} analyzerRules - regexs describing column overrides
+ * @param {Object.array} ignoredDataTypes - array of datatypes to ignore when validating
+ * @return {Object} column metadata
+ **/
+Analyzer.computeColMeta = function computeColMeta(
+  data,
+  analyzerRules,
+  options
+) {
+  var ignoredDataTypes = (options || {}).ignoredDataTypes || [];
+  var allValidators = CONSTANT.VALIDATORS.filter(function filterValidators(
+    validator
+  ) {
+    return this.indexOf(validator) < 0;
+  },
+  ignoredDataTypes);
+
   if (!data || Object.keys(data).length === 0) {
     return [];
   }
+
   var _columns = Object.keys(data[0]);
   /* eslint-disable max-statements */
   return _columns.reduce(function iterator(res, columnName) {
     var format = '';
     // First try to get the column from the rules
     var type = getTypeFromRules(analyzerRules, columnName);
-    // If it's not there then try to infer the type
+    // ff it's not there then try to infer the type
     if (!type) {
-      type = CONSTANT.VALIDATORS.find(buildValidatorFinder(data, columnName));
+      type = allValidators.find(buildValidatorFinder(data, columnName));
     }
     // if theres still no type, dump this column
     var category = Analyzer._category(type);
@@ -134,9 +155,9 @@ Analyzer.computeColMeta = function computeColMeta(data, analyzerRules) {
     var colMeta = {
       key: columnName,
       label: columnName,
-      type: type,
-      category: category,
-      format: format
+      type,
+      category,
+      format
     };
 
     if (type === CONSTANT.DATA_TYPES.GEOMETRY) {
@@ -144,7 +165,10 @@ Analyzer.computeColMeta = function computeColMeta(data, analyzerRules) {
       if (geoSample === null) {
         return res;
       }
-      colMeta.geoType = typeof geoSample.type === 'string' ? geoSample.type.toUpperCase() : null;
+      colMeta.geoType =
+        typeof geoSample.type === 'string'
+          ? geoSample.type.toUpperCase()
+          : null;
     }
     if (type === CONSTANT.DATA_TYPES.GEOMETRY_FROM_STRING) {
       var geoStringSample = Utils.findFirstNonNullValue(data, columnName);

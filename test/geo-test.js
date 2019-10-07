@@ -70,47 +70,51 @@ test('Analyzer: Geo check', function t(assert) {
     }
   ];
 
-  assert.deepEqual(arrMeta, expectedForArr, 'should get geometry from string correct');
+  assert.deepEqual(
+    arrMeta,
+    expectedForArr,
+    'should get geometry from string correct'
+  );
 
   var geoJsonArr = [
-    {col1: {'type': 'Point', 'coordinates': [102.0, 0.5]}},
-    {col1: {
-      type: 'LineString',
-      coordinates: [
-        [102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0]
-      ]
-    }},
-    {col1: {
-      type: 'Polygon',
-      coordinates: [
-        [
-          [100.0, 0.0],
-          [101.0, 0.0],
-          [101.0, 1.0],
-          [100.0, 1.0],
-          [100.0, 0.0]
+    {col1: {type: 'Point', coordinates: [102.0, 0.5]}},
+    {
+      col1: {
+        type: 'LineString',
+        coordinates: [[102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0]]
+      }
+    },
+    {
+      col1: {
+        type: 'Polygon',
+        coordinates: [
+          [[100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0]]
         ]
-      ]
-    }}
+      }
+    }
   ];
 
-  var expectedGeoMeta = [{
-    key: 'col1',
-    label: 'col1',
-    type: 'GEOMETRY',
-    category: 'GEOMETRY',
-    format: '',
-    geoType: 'POINT'
-  }];
+  var expectedGeoMeta = [
+    {
+      key: 'col1',
+      label: 'col1',
+      type: 'GEOMETRY',
+      category: 'GEOMETRY',
+      format: '',
+      geoType: 'POINT'
+    }
+  ];
 
   var geoMeta = Analyzer.computeColMeta(geoJsonArr);
-  assert.deepEqual(expectedGeoMeta, geoMeta, 'should get geometry from geojson correct');
+  assert.deepEqual(
+    expectedGeoMeta,
+    geoMeta,
+    'should get geometry from geojson correct'
+  );
   assert.end();
-
 });
 
 test('Analyzer: geo from string validator', function t(assert) {
-
   var arr = [];
   var mapArr = function mapArr(d) {
     return {col: d};
@@ -136,38 +140,85 @@ test('Analyzer: geo from string validator', function t(assert) {
     assert.equal(
       Analyzer.computeColMeta(arr)[0].geoType,
       expectedType,
-      'correctly indentifies ' + expectedType + ' as WKT ' + expectedType + 's'
+      `correctly indentifies ${  expectedType  } as WKT ${  expectedType  }s`
     );
   });
 
-  arr = ['-45.03, 168.66', '[-45.03,168.66]', '[-45.0304885022762, 168.660729378619]']
-    .map(mapArr);
-  assert.equal(Analyzer.computeColMeta(arr)[0].type,
+  arr = [
+    '-45.03, 168.66',
+    '[-45.03,168.66]',
+    '[-45.0304885022762, 168.660729378619]'
+  ].map(mapArr);
+  assert.equal(
+    Analyzer.computeColMeta(arr)[0].type,
     'PAIR_GEOMETRY_FROM_STRING',
-    'correctly finds geometry from string for pair wise points');
-  assert.equal(Analyzer.computeColMeta(arr)[0].geoType, 'POINT',
-    'correctly correctly indetifies those strings as pairs');
+    'correctly finds geometry from string for pair wise points'
+  );
+  assert.equal(
+    Analyzer.computeColMeta(arr)[0].geoType,
+    'POINT',
+    'correctly correctly indetifies those strings as pairs'
+  );
 
   assert.end();
 });
 
 /* eslint-disable max-len */
 test('Analyzer: integration test', function t(assert) {
-
   var known = [
-    {key: 'city_id', label: 'city_id', type: 'INT', category: 'MEASURE', format: ''},
-    {key: 'ST_AsText', label: 'ST_AsText', type: 'GEOMETRY_FROM_STRING', category: 'GEOMETRY', format: '', 'geoType': 'MULTIPOLYGON'},
-    {key: 'slug', label: 'slug', type: 'STRING', category: 'DIMENSION', format: ''},
+    {
+      key: 'city_id',
+      label: 'city_id',
+      type: 'INT',
+      category: 'MEASURE',
+      format: ''
+    },
+    {
+      key: 'ST_AsText',
+      label: 'ST_AsText',
+      type: 'GEOMETRY_FROM_STRING',
+      category: 'GEOMETRY',
+      format: '',
+      geoType: 'MULTIPOLYGON'
+    },
+    {
+      key: 'slug',
+      label: 'slug',
+      type: 'STRING',
+      category: 'DIMENSION',
+      format: ''
+    },
     {key: 'lat', label: 'lat', type: 'FLOAT', category: 'MEASURE', format: ''},
     {key: 'lng', label: 'lng', type: 'FLOAT', category: 'MEASURE', format: ''},
-    {key: 'country_name', label: 'country_name', type: 'CITY', category: 'DIMENSION', format: ''},
-    {key: 'launch_date', label: 'launch_date', type: 'DATE', category: 'TIME', format: 'YYYY-M-D'},
-    {key: 'region', label: 'region', type: 'STRING', category: 'DIMENSION', format: ''}
+    {
+      key: 'country_name',
+      label: 'country_name',
+      type: 'CITY',
+      category: 'DIMENSION',
+      format: ''
+    },
+    {
+      key: 'launch_date',
+      label: 'launch_date',
+      type: 'DATE',
+      category: 'TIME',
+      format: 'YYYY-M-D'
+    },
+    {
+      key: 'region',
+      label: 'region',
+      type: 'STRING',
+      category: 'DIMENSION',
+      format: ''
+    }
   ];
 
   var analyzed = Analyzer.computeColMeta(Example);
-  assert.deepEqual(analyzed, known,
-    'Example data generates from dim cities should generate good columns');
+  assert.deepEqual(
+    analyzed,
+    known,
+    'Example data generates from dim cities should generate good columns'
+  );
   assert.end();
 });
 
@@ -184,7 +235,13 @@ test('Analyzer: nulls', function t(assert) {
   ];
 
   var known = [
-    {category: 'TIME', format: 'YYYY-M-D HH:mm:ss.SSSS', key: 'a', label: 'a', type: 'DATETIME'},
+    {
+      category: 'TIME',
+      format: 'YYYY-M-D HH:mm:ss.SSSS',
+      key: 'a',
+      label: 'a',
+      type: 'DATETIME'
+    },
     {category: 'MEASURE', format: '', key: 'b', label: 'b', type: 'FLOAT'}
   ];
   var rules = [
@@ -192,16 +249,25 @@ test('Analyzer: nulls', function t(assert) {
     {regex: /d/, dataType: 'GEOMETRY_FROM_STRING'}
   ];
   var analyzed = Analyzer.computeColMeta(nullExample, rules);
-  assert.deepEqual(analyzed, known,
-    'Analyzer handles null data well');
+  assert.deepEqual(analyzed, known, 'Analyzer handles null data well');
 
   var newCoordData = [];
   for (var i = 0; i < 100; i++) {
     newCoordData.push({coordinates: ''});
   }
-  assert.deepEqual(Analyzer.computeColMeta(newCoordData), [
-    {category: 'DIMENSION', format: '', key: 'coordinates', label: 'coordinates', type: 'CITY'}
-  ], 'Handles conditional nulls well');
+  assert.deepEqual(
+    Analyzer.computeColMeta(newCoordData),
+    [
+      {
+        category: 'DIMENSION',
+        format: '',
+        key: 'coordinates',
+        label: 'coordinates',
+        type: 'CITY'
+      }
+    ],
+    'Handles conditional nulls well'
+  );
   assert.end();
 });
 
@@ -209,13 +275,55 @@ test('Analyzer: long test', function t(assert) {
   var analyzed = Analyzer.computeColMeta(LargeData);
 
   var knownAnalysis = [
-    {key: 'ts', label: 'ts', type: 'DATETIME', category: 'TIME', 'format': 'YYYY-M-D H:m:s'},
-    {key: 'city', label: 'city', type: 'CITY', category: 'DIMENSION', 'format': ''},
-    {key: 'country', label: 'country', type: 'CITY', category: 'DIMENSION', 'format': ''},
-    {key: 'metrics1', label: 'metrics1', type: 'INT', category: 'MEASURE', 'format': ''},
-    {key: 'metrics2', label: 'metrics2', type: 'FLOAT', category: 'MEASURE', 'format': ''},
-    {key: 'metrics3', label: 'metrics3', type: 'FLOAT', category: 'MEASURE', 'format': ''},
-    {key: 'metrics4', label: 'metrics4', type: 'PERCENT', category: 'MEASURE', 'format': ''}
+    {
+      key: 'ts',
+      label: 'ts',
+      type: 'DATETIME',
+      category: 'TIME',
+      format: 'YYYY-M-D H:m:s'
+    },
+    {
+      key: 'city',
+      label: 'city',
+      type: 'CITY',
+      category: 'DIMENSION',
+      format: ''
+    },
+    {
+      key: 'country',
+      label: 'country',
+      type: 'CITY',
+      category: 'DIMENSION',
+      format: ''
+    },
+    {
+      key: 'metrics1',
+      label: 'metrics1',
+      type: 'INT',
+      category: 'MEASURE',
+      format: ''
+    },
+    {
+      key: 'metrics2',
+      label: 'metrics2',
+      type: 'FLOAT',
+      category: 'MEASURE',
+      format: ''
+    },
+    {
+      key: 'metrics3',
+      label: 'metrics3',
+      type: 'FLOAT',
+      category: 'MEASURE',
+      format: ''
+    },
+    {
+      key: 'metrics4',
+      label: 'metrics4',
+      type: 'PERCENT',
+      category: 'MEASURE',
+      format: ''
+    }
   ];
   assert.deepEqual(analyzed, knownAnalysis, 'Analyzer handles null data well');
   assert.end();
@@ -225,8 +333,21 @@ var coordData = require('./coord-data.json');
 
 test('Analyzer: coords', function t(assert) {
   var analyzed = Analyzer.computeColMeta(coordData);
-  var expected = [{category: 'GEOMETRY', format: '', geoType: 'POINT', key: 'coordinates', label: 'coordinates', type: 'PAIR_GEOMETRY_FROM_STRING'}];
-  assert.deepEqual(expected, analyzed, 'Handle data formatted as pairs of coordinates correctly');
+  var expected = [
+    {
+      category: 'GEOMETRY',
+      format: '',
+      geoType: 'POINT',
+      key: 'coordinates',
+      label: 'coordinates',
+      type: 'PAIR_GEOMETRY_FROM_STRING'
+    }
+  ];
+  assert.deepEqual(
+    expected,
+    analyzed,
+    'Handle data formatted as pairs of coordinates correctly'
+  );
   assert.end();
 });
 /* eslint-enable max-len */

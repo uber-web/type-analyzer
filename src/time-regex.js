@@ -17,8 +17,8 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 'use strict';
+
 /**
  * Given an array of regexes to union, build a string of them
  * @param {Array} arr - an array of regexes to be unioned
@@ -59,6 +59,7 @@ var TIME_FORMAT_STRINGS = [
   'HH:mm:ss.SSSS',
   'HH:mm:ss.SSSSZZ'
 ].reverse();
+
 // the reverse is important to put the more specific regexs higher in the order
 var TIME_FORMAT_REGEX_STRINGS = [
   X,
@@ -75,11 +76,13 @@ var TIME_FORMAT_REGEX_STRINGS = [
 
 // something like:
 // {'(\d{2)....': 'M-D-YYYY'}
-var TIME_FORMAT_REGEX_MAP = TIME_FORMAT_STRINGS
-  .reduce(function generateRegexMap(timeFormats, str, index) {
+var TIME_FORMAT_REGEX_MAP = TIME_FORMAT_STRINGS.reduce(
+  function generateRegexMap(timeFormats, str, index) {
     timeFormats[TIME_FORMAT_REGEX_STRINGS[index]] = str;
     return timeFormats;
-  }, {});
+  },
+  {}
+);
 
 var ALL_TIME_FORMAT_REGEX_STR = union(Object.keys(TIME_FORMAT_REGEX_MAP));
 var ALL_TIME_FORMAT_REGEX = new RegExp('^' + ALL_TIME_FORMAT_REGEX_STR + '$', 'i');
@@ -128,6 +131,7 @@ var dateFormatRegexStrings = [
   MMMM + ' ' + Do + ', ' + YYYY,
   MMM + ' ' + Do + ', ' + YYYY
 ];
+
 var dateFormatStrings = [
   'YYYY-M-D',
   'YYYY/M/D',
@@ -141,19 +145,25 @@ var DATE_FORMAT_REGEX = new RegExp('^' + union(dateFormatRegexStrings) + '$', 'i
 
 // something like:
 // {'(\d{2)....': 'M-D-YYYY'}
-var DATE_FORMAT_REGEX_MAP = dateFormatStrings
-  .reduce(function generateRegexMap(dateFormats, str, index) {
-    dateFormats[dateFormatRegexStrings[index]] = str;
-    return dateFormats;
-  }, {});
+var DATE_FORMAT_REGEX_MAP = dateFormatStrings.reduce(function generateRegexMap(
+  dateFormats,
+  str,
+  index
+) {
+  dateFormats[dateFormatRegexStrings[index]] = str;
+  return dateFormats;
+},
+{});
 
 // COMPUTE THEIR CROSS PRODUCT
 
 // {'SOME HELLISH REGEX': 'YYYY HH:MM:SS'}
-var DATE_TIME_MAP = Object.keys(DATE_FORMAT_REGEX_MAP)
-  .reduce(function reduceDate(dateTimes, dateRegex) {
+var DATE_TIME_MAP = Object.keys(DATE_FORMAT_REGEX_MAP).reduce(
+  function reduceDate(dateTimes, dateRegex) {
     var dateStr = DATE_FORMAT_REGEX_MAP[dateRegex];
-    Object.keys(TIME_FORMAT_REGEX_MAP).forEach(function loopAcrosTimes(timeRegex) {
+    Object.keys(TIME_FORMAT_REGEX_MAP).forEach(function loopAcrosTimes(
+      timeRegex
+    ) {
       var timeStr = TIME_FORMAT_REGEX_MAP[timeRegex];
       dateTimes[dateRegex + ' ' + timeRegex] = dateStr + ' ' + timeStr;
       dateTimes[dateRegex + 'T' + timeRegex] = dateStr + 'T' + timeStr;
@@ -161,7 +171,9 @@ var DATE_TIME_MAP = Object.keys(DATE_FORMAT_REGEX_MAP)
       dateTimes[timeRegex + ' ' + dateRegex] = timeStr + ' ' + dateStr;
     });
     return dateTimes;
-  }, {});
+  },
+  {}
+);
 var ALL_DATE_TIME_REGEX = new RegExp(union(Object.keys(DATE_TIME_MAP)));
 
 module.exports = {

@@ -17,7 +17,6 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 'use strict';
 
 var CONSTANT = {
@@ -92,13 +91,15 @@ CONSTANT.POSSIBLE_TYPES[CONSTANT.CATEGORIES.MEASURE] = [
   CONSTANT.DATA_TYPES.PERCENT
 ];
 
-CONSTANT.TYPES_TO_CATEGORIES = Object.keys(CONSTANT.POSSIBLE_TYPES)
-  .reduce(function generateTypeToCategoryMap(res, category) {
+CONSTANT.TYPES_TO_CATEGORIES = Object.keys(CONSTANT.POSSIBLE_TYPES).reduce(
+  function generateTypeToCategoryMap(res, category) {
     CONSTANT.POSSIBLE_TYPES[category].forEach(function loopAcrossTypes(type) {
       res[type] = category;
     });
     return res;
-  }, {});
+  },
+  {}
+);
 
 // NOTE: the order of validator is important.
 // the ancestor validator used to be the subset of next validator
