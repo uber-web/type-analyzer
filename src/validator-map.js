@@ -64,7 +64,6 @@ VALIDATOR_MAP[DATA_TYPES.NUMBER] = function isNumeric(row) {
 
 // strings: '94101-10', 'San Francisco', 'Name'
 VALIDATOR_MAP[DATA_TYPES.ZIPCODE] = Utils.buildRegexCheck('isZipCode');
-VALIDATOR_MAP[DATA_TYPES.CITY] = Utils.buildRegexCheck('isCity');
 VALIDATOR_MAP[DATA_TYPES.STRING] = Utils.isString;
 
 module.exports = VALIDATOR_MAP;

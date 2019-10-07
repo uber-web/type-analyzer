@@ -101,6 +101,12 @@ test('Analyzer: number validator', function t(assert) {
     'CURRENCY',
     'Inteprets values as currency'
   );
+  arr = ['$1', '$0.12', '$1.12', '$1,000.12', '$1,000.12'].map(mapArr);
+  assert.equal(
+    Analyzer.computeColMeta(arr, [], {ignoredDataTypes: 'CURRENCY'})[0].type,
+    'STRING',
+    'Inteprets values with ignoredDataType:CURRENCY as string'
+  );
 
   arr = ['10.12345%', '-10.222%', '+1,000.33%', '10.4%', '10.55%'].map(mapArr);
   assert.equal(
@@ -139,8 +145,8 @@ test('Analyzer: string validator', function t(assert) {
       arr = [ex, ex, ex, ex, ex, ex].map(mapArr);
       assert.equal(
         Analyzer.computeColMeta(arr)[0].type,
-        'CITY',
-        'Interprets ' + ex + ' strings a city'
+        'STRING',
+        'Interprets ' + ex + ' strings a string'
       );
     }
   );
@@ -150,22 +156,11 @@ test('Analyzer: string validator', function t(assert) {
       arr = [ex, ex, ex, ex, ex, ex].map(mapArr);
       assert.equal(
         Analyzer.computeColMeta(arr)[0].type,
-        'CITY',
-        'Interprets ' + ex + ' strings a city'
-      );
-    }
-  );
-  ['San Francisco', 'New York', 'Chicago', 'Austin', 'Los Angeles'].forEach(
-    function loopAcrossExamples(ex) {
-      arr = [ex, ex, ex, ex, ex, ex].map(mapArr);
-      assert.equal(
-        Analyzer.computeColMeta(arr, [], {ignoredDataTypes: 'CITY'})[0].type,
         'STRING',
-        'Interprets ' + ex + ' city string with ignoreDataType: city as a string'
+        'Interprets ' + ex + ' strings a string'
       );
     }
   );
-
   [
     '13 Domestic Whole',
     '11 Domestic New',

@@ -44,10 +44,6 @@ var RegexList = {
   // http://www.regxlib.com/Search.aspx?k=zipcode&c=-1&m=-1&ps=20
   isZipCode: /(^\d{5}$)|(^\d{5}-\d{4}$)|(^\d{6}$)|(^\d{6}-\d{2}$)/,
 
-  // maybe we should import a list of cities we have.
-  // reference: http://stackoverflow.com/a/25677072
-  isCity: /^([a-zA-Z\u0080-\u024F]+(?:. |-| |'))*[a-zA-Z\u0080-\u024F]*$/,
-
   isTime: TimeRegex.ALL_TIME_FORMAT_REGEX,
 
   isDate: TimeRegex.DATE_FORMAT_REGEX,

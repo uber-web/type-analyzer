@@ -57,7 +57,7 @@ test('Analyzer: Geo check', function t(assert) {
     {
       key: 'treatment_group_key',
       label: 'treatment_group_key',
-      type: 'CITY',
+      type: 'STRING',
       category: 'DIMENSION',
       format: ''
     },
@@ -193,7 +193,7 @@ test('Analyzer: integration test', function t(assert) {
     {
       key: 'country_name',
       label: 'country_name',
-      type: 'CITY',
+      type: 'STRING',
       category: 'DIMENSION',
       format: ''
     },
@@ -263,7 +263,7 @@ test('Analyzer: nulls', function t(assert) {
         format: '',
         key: 'coordinates',
         label: 'coordinates',
-        type: 'CITY'
+        type: 'STRING'
       }
     ],
     'Handles conditional nulls well'
@@ -285,14 +285,14 @@ test('Analyzer: long test', function t(assert) {
     {
       key: 'city',
       label: 'city',
-      type: 'CITY',
+      type: 'STRING',
       category: 'DIMENSION',
       format: ''
     },
     {
       key: 'country',
       label: 'country',
-      type: 'CITY',
+      type: 'STRING',
       category: 'DIMENSION',
       format: ''
     },
