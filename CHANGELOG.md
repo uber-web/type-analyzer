@@ -16,6 +16,12 @@ Each version should:
 Ref: http://keepachangelog.com/en/0.3.0/
 -->
 
+#### [0.2.2] - Oct 07 2019 (b913061)
+37de75d add eslint and prettier
+0f10ab9 [Doc] Update README to add ignoredDataTypes
+3e0134e remove TYPE city all together
+2cf641b port internal type-analyzer commits over (currently at 1.5.0)
+
 #### [0.2.1] - Jan 03 2019 (c6fb704)
 4c2a767 Add CHANGELOG.md
 f676778 Don't attempt to analyze missing columns.
