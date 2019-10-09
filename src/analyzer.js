@@ -68,6 +68,7 @@ function buildValidatorFinder(data, columnName) {
     });
 
     var validator = VALIDATOR_MAP[validatorName];
+
     var strikes = Math.min(NUMBER_OF_ALLOWED_HITS, nonNullData.length);
     var hits = 0;
     nonNullData.some(function iterateAcrossData(row) {

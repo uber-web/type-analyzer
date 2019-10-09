@@ -16,6 +16,8 @@ row-column formatted dataset. We support the following datatypes:
 * **CURRENCY**
 * **PERCENT**
 * **STRING**
+* **ARRAY**
+* **OBJECT**
 * **ZIPCODE**
 * **BOOLEAN**
 * **GEOMETRY**

@@ -96,6 +96,14 @@ var Utils = {
     return typeof value === 'string';
   },
 
+  isArray: function isArray(value) {
+    return Array.isArray(value);
+  },
+
+  isObject: function isObject(value) {
+    return value === Object(value) && typeof value !== 'function' && !Array.isArray(value)
+  },
+
   whichFormatTime: whichFormatTime,
   whichFormatDate: whichFormatDate,
   whichFormatDateTime: whichFormatDateTime

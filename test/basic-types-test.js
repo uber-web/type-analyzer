@@ -78,6 +78,32 @@ test('Analyzer: boolean validator', function t(assert) {
   assert.end();
 });
 
+test('Analyzer: array validator', function t(assert) {
+  var arr = [];
+
+  arr = [[1,2,3], [4,5,6], [7,8,9], ['1', 'b'], ['2', 3], ['he']].map(mapArr);
+  assert.equal(
+    Analyzer.computeColMeta(arr)[0].type,
+    'ARRAY',
+    'Should interpret as Array, if data contain js array'
+  );
+
+  assert.end();
+});
+
+test('Analyzer: object validator', function t(assert) {
+  var arr = [];
+
+  arr = [{a: 1}, [4,5,6], {b: 2}, {c: 3}, {d: 4}, {d: 5}].map(mapArr);
+  assert.equal(
+    Analyzer.computeColMeta(arr)[0].type,
+    'OBJECT',
+    'Should interpret as Object, if data contain js object'
+  );
+
+  assert.end();
+});
+
 test('Analyzer: number validator', function t(assert) {
   var arr = [];
 
