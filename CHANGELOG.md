@@ -16,6 +16,9 @@ Each version should:
 Ref: http://keepachangelog.com/en/0.3.0/
 -->
 
+#### [0.2.3] - Oct 08 2019 (371f641
+986ce5c [Enhancement] Add support for Array and Object data type)
+
 #### [0.2.2] - Oct 07 2019 (b913061)
 37de75d add eslint and prettier
 0f10ab9 [Doc] Update README to add ignoredDataTypes
