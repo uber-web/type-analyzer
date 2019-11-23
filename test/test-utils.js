@@ -30,7 +30,7 @@ var testDurations = [];
 function test(name, spec) {
   tapeTest(name, function onTest() {
     var start = Date.now();
-    spec.apply(null, arguments);
+    spec(...arguments);
     var duration = Date.now() - start;
     testDurations.push({name: name, duration: duration});
   });
