@@ -161,6 +161,13 @@ test('Analyzer: number validator', function t(assert) {
     'Inteprets values as numbers'
   );
   assert.end();
+
+  arr = ['182891173641581479', '2e53', '1e16', 182891173641581479].map(mapArr);
+  assert.equal(
+    Analyzer.computeColMeta(arr)[0].type,
+    'NUMBER',
+    'Inteprets large numeric values as numbers'
+  );
 });
 
 test('Analyzer: string validator', function t(assert) {

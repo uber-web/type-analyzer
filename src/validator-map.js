@@ -53,8 +53,16 @@ VALIDATOR_MAP[DATA_TYPES.TIME] = Utils.buildRegexCheck('isTime');
 // VALIDATOR_MAP[DATA_TYPES.TIME] = Utils.whichFormatTime;
 
 // numbers:
-// 1, 2, 3
-VALIDATOR_MAP[DATA_TYPES.INT] = Utils.buildRegexCheck('isInt');
+// 1, 2, 3, +40, 15,121
+const intRegexCheck = Utils.buildRegexCheck('isInt');
+VALIDATOR_MAP[DATA_TYPES.INT] = function isInt(value) {
+  if (intRegexCheck(value)) {
+    var asNum = parseInt(value.toString().replace(/(\+|,)/g, ''), 10);
+    return asNum > Number.MIN_SAFE_INTEGER && asNum < Number.MAX_SAFE_INTEGER;
+  }
+
+  return false;
+};
 
 // 1.1, 2.2, 3.3
 VALIDATOR_MAP[DATA_TYPES.FLOAT] = Utils.buildRegexCheck('isFloat');
