@@ -16,7 +16,10 @@ Each version should:
 Ref: http://keepachangelog.com/en/0.3.0/
 -->
 
-#### [0.2.3] - Oct 08 2019 (371f641
+#### [0.2.4] - Jan 08 2020 (3ab0fb8)
+2cf038e Treat large numeric columns as numbers
+
+#### [0.2.3] - Oct 08 2019 (371f641)
 986ce5c [Enhancement] Add support for Array and Object data type)
 
 #### [0.2.2] - Oct 07 2019 (b913061)
