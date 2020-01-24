@@ -121,6 +121,16 @@ test('Analyzer: number validator', function t(assert) {
     'Inteprets values as floats'
   );
 
+  arr = [
+    1, '222,222', '-333,333,333', -4, '+5,000',
+    '-.1111', '+.2', '+3,333.3333', 444.4444, '5,555,555.5'
+  ].map(mapArr);
+  assert.equal(
+    Analyzer.computeColMeta(arr)[0].type,
+    'FLOAT',
+    'Inteprets a mix of int and float values as floats'
+  );
+
   arr = ['$1', '$0.12', '$1.12', '$1,000.12', '$1,000.12'].map(mapArr);
   assert.equal(
     Analyzer.computeColMeta(arr)[0].type,
@@ -167,6 +177,17 @@ test('Analyzer: number validator', function t(assert) {
     Analyzer.computeColMeta(arr)[0].type,
     'NUMBER',
     'Inteprets large numeric values as numbers'
+  );
+
+  arr = [
+    1, '222,222', '-333,333,333', -4, '+5,000',
+    '-.1111', '+.2', '+3,333.3333', 444.4444, '5,555,555.5',
+    '182891173641581479', '2e53', '1e16', 182891173641581479
+  ].map(mapArr);
+  assert.equal(
+    Analyzer.computeColMeta(arr)[0].type,
+    'NUMBER',
+    'Inteprets a mix of numeric values as numbers'
   );
 });
 
