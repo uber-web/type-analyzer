@@ -16,6 +16,9 @@ Each version should:
 Ref: http://keepachangelog.com/en/0.3.0/
 -->
 
+#### [0.2.5] - Jan 25 2020
+dd0361f Treat mixed int/float columns as float
+
 #### [0.2.4] - Jan 08 2020 (3ab0fb8)
 2cf038e Treat large numeric columns as numbers
 
