@@ -81,7 +81,9 @@ test('Analyzer: boolean validator', function t(assert) {
 test('Analyzer: array validator', function t(assert) {
   var arr = [];
 
-  arr = [[1,2,3], [4,5,6], [7,8,9], ['1', 'b'], ['2', 3], ['he']].map(mapArr);
+  arr = [[1, 2, 3], [4, 5, 6], [7, 8, 9], ['1', 'b'], ['2', 3], ['he']].map(
+    mapArr
+  );
   assert.equal(
     Analyzer.computeColMeta(arr)[0].type,
     'ARRAY',
@@ -94,7 +96,7 @@ test('Analyzer: array validator', function t(assert) {
 test('Analyzer: object validator', function t(assert) {
   var arr = [];
 
-  arr = [{a: 1}, [4,5,6], {b: 2}, {c: 3}, {d: 4}, {d: 5}].map(mapArr);
+  arr = [{a: 1}, [4, 5, 6], {b: 2}, {c: 3}, {d: 4}, {d: 5}].map(mapArr);
   assert.equal(
     Analyzer.computeColMeta(arr)[0].type,
     'OBJECT',
@@ -114,6 +116,13 @@ test('Analyzer: number validator', function t(assert) {
     'Inteprets values as integers'
   );
 
+  arr = [NaN, NaN, NaN, 1, '222,222', '-333,333,333', -4, '+5,000'].map(mapArr);
+  assert.equal(
+    Analyzer.computeColMeta(arr)[0].type,
+    'INT',
+    'Treats NaNs as nulls and inteprets values as integer'
+  );
+
   arr = ['-.1111', '+.2', '+3,333.3333', 444.4444, '5,555,555.5'].map(mapArr);
   assert.equal(
     Analyzer.computeColMeta(arr)[0].type,
@@ -122,13 +131,37 @@ test('Analyzer: number validator', function t(assert) {
   );
 
   arr = [
-    1, '222,222', '-333,333,333', -4, '+5,000',
-    '-.1111', '+.2', '+3,333.3333', 444.4444, '5,555,555.5'
+    1,
+    '222,222',
+    '-333,333,333',
+    -4,
+    '+5,000',
+    '-.1111',
+    '+.2',
+    '+3,333.3333',
+    444.4444,
+    '5,555,555.5'
   ].map(mapArr);
   assert.equal(
     Analyzer.computeColMeta(arr)[0].type,
     'FLOAT',
     'Inteprets a mix of int and float values as floats'
+  );
+
+  arr = [
+    NaN,
+    NaN,
+    NaN,
+    '-.1111',
+    '+.2',
+    '+3,333.3333',
+    444.4444,
+    '5,555,555.5'
+  ].map(mapArr);
+  assert.equal(
+    Analyzer.computeColMeta(arr)[0].type,
+    'FLOAT',
+    'Treats NaNs as nulls still inteprets values as floats'
   );
 
   arr = ['$1', '$0.12', '$1.12', '$1,000.12', '$1,000.12'].map(mapArr);
@@ -157,9 +190,9 @@ test('Analyzer: number validator', function t(assert) {
       assert.equal(
         Analyzer.computeColMeta(arr)[0].category,
         'MEASURE',
-        'Inteprets sci or money valeus, eg '
-        + ex +
-        ' formatted values as numbers'
+        'Inteprets sci or money valeus, eg ' +
+          ex +
+          ' formatted values as numbers'
       );
     }
   );
@@ -180,9 +213,20 @@ test('Analyzer: number validator', function t(assert) {
   );
 
   arr = [
-    1, '222,222', '-333,333,333', -4, '+5,000',
-    '-.1111', '+.2', '+3,333.3333', 444.4444, '5,555,555.5',
-    '182891173641581479', '2e53', '1e16', 182891173641581479
+    1,
+    '222,222',
+    '-333,333,333',
+    -4,
+    '+5,000',
+    '-.1111',
+    '+.2',
+    '+3,333.3333',
+    444.4444,
+    '5,555,555.5',
+    '182891173641581479',
+    '2e53',
+    '1e16',
+    182891173641581479
   ].map(mapArr);
   assert.equal(
     Analyzer.computeColMeta(arr)[0].type,

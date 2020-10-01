@@ -37,6 +37,12 @@ var VALIDATOR_CONSIDERS_EMPTY_STRING_NULL = {
   NUMBER: true
 };
 
+var VALIDATOR_CONSIDERS_NAN_NULL = {
+  INT: true,
+  NUMBER: true,
+  FLOAT: true
+};
+
 /**
  * Check if a given value is a null for a validator
  * @param {String} value - value to be checked if null
@@ -49,6 +55,10 @@ function valueIsNullForValidator(value, validatorName) {
     value === CONSTANT.NULL ||
     typeof value === 'undefined'
   ) {
+    return true;
+  }
+
+  if (Number.isNaN(value) && VALIDATOR_CONSIDERS_NAN_NULL[validatorName]) {
     return true;
   }
 
