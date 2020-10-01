@@ -17,6 +17,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+/* eslint-disable max-statements */
 
 'use strict';
 
@@ -182,6 +183,22 @@ test('Analyzer: number validator', function t(assert) {
     Analyzer.computeColMeta(arr)[0].type,
     'PERCENT',
     'Inteprets values as percents'
+  );
+
+  arr = [
+    '\\N',
+    '\\N',
+    '\\N',
+    '10.12345%',
+    '-10.222%',
+    '+1,000.33%',
+    '10.4%',
+    '10.55%'
+  ].map(mapArr);
+  assert.equal(
+    Analyzer.computeColMeta(arr)[0].type,
+    'PERCENT',
+    'Ignore database nulls, and inteprets values as percents'
   );
 
   [2.3, '+4,000', '-5,023.234', '2.3e+2', '$23,203', '23.45%'].forEach(

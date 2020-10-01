@@ -53,6 +53,7 @@ function valueIsNullForValidator(value, validatorName) {
   if (
     value === null ||
     value === CONSTANT.NULL ||
+    value === CONSTANT.DB_NULL ||
     typeof value === 'undefined'
   ) {
     return true;
