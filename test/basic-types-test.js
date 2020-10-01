@@ -293,7 +293,7 @@ test('Analyzer: string validator', function t(assert) {
 
   arr = ['\\N', '\\N', '\\N', '\\N', '\\N'].map(mapArr);
   assert.equal(
-    Analyzer.computeColMeta(arr)[0].type,
+    Analyzer.computeColMeta(arr, [], {keepUnknowns: true})[0].type,
     'STRING',
     'Interprets as a string'
   );
@@ -307,7 +307,9 @@ test('Analyzer: handling of unknown types', function t(assert) {
   ['', null, undefined, ''].forEach(function loopAcrossExamples(ex) {
     arr = [ex, ex, ex, ex, ex, ex].map(mapArr);
     assert.equal(
-      Analyzer.computeColMeta(arr, [], {ignoredDataTypes: 'CITY'})[0].type,
+      Analyzer.computeColMeta(arr, [], {
+        keepUnknowns: true
+      })[0].type,
       'STRING',
       'Interprets ' + ex + ' as a string'
     );

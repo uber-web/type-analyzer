@@ -135,8 +135,8 @@ Analyzer.computeColMeta = function computeColMeta(
 ) {
   options = options || {};
   var ignoredDataTypes = options.ignoredDataTypes || [];
-  var dropUnknowns = options.dropUnknowns;
-  var maybePushUnknown = dropUnknowns ? _noop : _pushIntoArr;
+  var keepUnknowns = options.keepUnknowns;
+  var maybePushUnknown = keepUnknowns ? _pushIntoArr : _noop;
   var allValidators = CONSTANT.VALIDATORS.filter(function filterValidators(
     validator
   ) {

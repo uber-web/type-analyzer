@@ -259,9 +259,7 @@ test('Analyzer: nulls', function t(assert) {
     {regex: /c/, dataType: 'DATETIME'},
     {regex: /d/, dataType: 'GEOMETRY_FROM_STRING'}
   ];
-  var analyzed = Analyzer.computeColMeta(nullExample, rules, {
-    dropUnknowns: true
-  });
+  var analyzed = Analyzer.computeColMeta(nullExample, rules);
   assert.deepEqual(analyzed, known, 'Analyzer handles null data well');
 
   var newCoordData = [];
@@ -318,7 +316,9 @@ test('Analyzer: nulls without dropping unknowns, and just intepreting as string'
     {regex: /c/, dataType: 'DATETIME'},
     {regex: /d/, dataType: 'GEOMETRY_FROM_STRING'}
   ];
-  var analyzed = Analyzer.computeColMeta(nullExample, rules);
+  var analyzed = Analyzer.computeColMeta(nullExample, rules, {
+    keepUnknowns: true
+  });
   assert.deepEqual(analyzed, known, 'Analyzer handles null data well');
   assert.end();
 });
