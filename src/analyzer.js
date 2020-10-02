@@ -37,6 +37,12 @@ var VALIDATOR_CONSIDERS_EMPTY_STRING_NULL = {
   NUMBER: true
 };
 
+var VALIDATOR_CONSIDERS_NAN_NULL = {
+  INT: true,
+  NUMBER: true,
+  FLOAT: true
+};
+
 /**
  * Check if a given value is a null for a validator
  * @param {String} value - value to be checked if null
@@ -47,8 +53,13 @@ function valueIsNullForValidator(value, validatorName) {
   if (
     value === null ||
     value === CONSTANT.NULL ||
+    value === CONSTANT.DB_NULL ||
     typeof value === 'undefined'
   ) {
+    return true;
+  }
+
+  if (Number.isNaN(value) && VALIDATOR_CONSIDERS_NAN_NULL[validatorName]) {
     return true;
   }
 
@@ -104,6 +115,12 @@ function getTypeFromRules(analyzerRules, columnName) {
   }, false);
 }
 
+function _pushIntoArr(arr, item) {
+  arr.push(item);
+}
+
+function _noop() {}
+
 /**
  * Generate metadata about columns in a dataset
  * @param {Object} data - data for which meta will be generated
@@ -116,7 +133,10 @@ Analyzer.computeColMeta = function computeColMeta(
   analyzerRules,
   options
 ) {
-  var ignoredDataTypes = (options || {}).ignoredDataTypes || [];
+  options = options || {};
+  var ignoredDataTypes = options.ignoredDataTypes || [];
+  var keepUnknowns = options.keepUnknowns;
+  var maybePushUnknown = keepUnknowns ? _pushIntoArr : _noop;
   var allValidators = CONSTANT.VALIDATORS.filter(function filterValidators(
     validator
   ) {
@@ -129,7 +149,7 @@ Analyzer.computeColMeta = function computeColMeta(
   }
 
   var _columns = Object.keys(data[0]);
-  /* eslint-disable max-statements */
+  /* eslint-disable max-statements, complexity */
   return _columns.reduce(function iterator(res, columnName) {
     var format = '';
     // First try to get the column from the rules
@@ -138,32 +158,38 @@ Analyzer.computeColMeta = function computeColMeta(
     if (!type) {
       type = allValidators.find(buildValidatorFinder(data, columnName));
     }
-    // if theres still no type, dump this column
     var category = Analyzer._category(type);
+    var colMeta = {
+      key: columnName,
+      label: columnName,
+      type: CONSTANT.DATA_TYPES.STRING,
+      category: category || CONSTANT.CATEGORIES.DIMENSION,
+      format: ''
+    };
+
+    // if theres still no type, potentially dump this column
     if (!type) {
+      maybePushUnknown(res, colMeta);
       return res;
     }
+    colMeta.type = type;
+
     // if its a time, detect and record the time
     if (type && CONSTANT.TIME_VALIDATORS.indexOf(type) !== -1) {
       // Find the first non-null value.
       var sample = Utils.findFirstNonNullValue(data, columnName);
       if (sample === null) {
+        maybePushUnknown(res, colMeta);
         return res;
       }
       format = Utils.detectTimeFormat(sample, type);
     }
-
-    var colMeta = {
-      key: columnName,
-      label: columnName,
-      type,
-      category,
-      format
-    };
+    colMeta.format = format;
 
     if (type === CONSTANT.DATA_TYPES.GEOMETRY) {
       var geoSample = Utils.findFirstNonNullValue(data, columnName);
       if (geoSample === null) {
+        maybePushUnknown(res, colMeta);
         return res;
       }
       colMeta.geoType =
@@ -174,6 +200,7 @@ Analyzer.computeColMeta = function computeColMeta(
     if (type === CONSTANT.DATA_TYPES.GEOMETRY_FROM_STRING) {
       var geoStringSample = Utils.findFirstNonNullValue(data, columnName);
       if (geoStringSample === null) {
+        maybePushUnknown(res, colMeta);
         return res;
       }
       colMeta.geoType = geoStringSample.split(' ')[0].toUpperCase();

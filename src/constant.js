@@ -61,6 +61,8 @@ var CONSTANT = {
   BOOLEAN_TRUE_VALUES: ['true', 'yes'],
   BOOLEAN_FALSE_VALUES: ['false', 'no'],
 
+  // Common in databases like MySQL: https://dev.mysql.com/doc/refman/8.0/en/null-values.html
+  DB_NULL: '\\N',
   NULL: 'NULL'
 };
 

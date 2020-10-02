@@ -81,14 +81,25 @@ test('Analyzer: Geo check', function t(assert) {
     {
       col1: {
         type: 'LineString',
-        coordinates: [[102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0]]
+        coordinates: [
+          [102.0, 0.0],
+          [103.0, 1.0],
+          [104.0, 0.0],
+          [105.0, 1.0]
+        ]
       }
     },
     {
       col1: {
         type: 'Polygon',
         coordinates: [
-          [[100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0]]
+          [
+            [100.0, 0.0],
+            [101.0, 0.0],
+            [101.0, 1.0],
+            [100.0, 1.0],
+            [100.0, 0.0]
+          ]
         ]
       }
     }
@@ -140,7 +151,7 @@ test('Analyzer: geo from string validator', function t(assert) {
     assert.equal(
       Analyzer.computeColMeta(arr)[0].geoType,
       expectedType,
-      `correctly indentifies ${  expectedType  } as WKT ${  expectedType  }s`
+      `correctly indentifies ${expectedType} as WKT ${expectedType}s`
     );
   });
 
@@ -268,6 +279,47 @@ test('Analyzer: nulls', function t(assert) {
     ],
     'Handles conditional nulls well'
   );
+  assert.end();
+});
+
+test('Analyzer: nulls without dropping unknowns, and just intepreting as string', function t(assert) {
+  var nullExample = [
+    {a: '2016-11-04 12:43:36.711458', b: null, c: null, d: null},
+    {a: '2016-11-04 12:43:36.711458', b: null, c: null, d: null},
+    {a: '2016-11-04 12:43:36.711458', b: null, c: null, d: null},
+    {a: '2016-11-04 12:43:36.711458', b: null, c: null, d: null},
+    {a: '2016-11-04 12:43:36.711458', b: 1.2, c: null, d: null},
+    {a: '2016-11-04 12:43:36.711458', b: null, c: null, d: null},
+    {a: '2016-11-04 12:43:36.711458', b: null, c: null, d: null},
+    {a: '2016-11-04 12:43:36.711458', b: null, c: null, d: null}
+  ];
+
+  var known = [
+    {
+      category: 'TIME',
+      format: 'YYYY-M-D HH:mm:ss.SSSS',
+      key: 'a',
+      label: 'a',
+      type: 'DATETIME'
+    },
+    {category: 'MEASURE', format: '', key: 'b', label: 'b', type: 'FLOAT'},
+    {category: 'TIME', format: '', key: 'c', label: 'c', type: 'DATETIME'},
+    {
+      category: 'GEOMETRY',
+      format: '',
+      key: 'd',
+      label: 'd',
+      type: 'GEOMETRY_FROM_STRING'
+    }
+  ];
+  var rules = [
+    {regex: /c/, dataType: 'DATETIME'},
+    {regex: /d/, dataType: 'GEOMETRY_FROM_STRING'}
+  ];
+  var analyzed = Analyzer.computeColMeta(nullExample, rules, {
+    keepUnknowns: true
+  });
+  assert.deepEqual(analyzed, known, 'Analyzer handles null data well');
   assert.end();
 });
 

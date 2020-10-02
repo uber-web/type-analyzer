@@ -17,6 +17,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+/* eslint-disable max-statements */
 
 'use strict';
 
@@ -81,7 +82,9 @@ test('Analyzer: boolean validator', function t(assert) {
 test('Analyzer: array validator', function t(assert) {
   var arr = [];
 
-  arr = [[1,2,3], [4,5,6], [7,8,9], ['1', 'b'], ['2', 3], ['he']].map(mapArr);
+  arr = [[1, 2, 3], [4, 5, 6], [7, 8, 9], ['1', 'b'], ['2', 3], ['he']].map(
+    mapArr
+  );
   assert.equal(
     Analyzer.computeColMeta(arr)[0].type,
     'ARRAY',
@@ -94,7 +97,7 @@ test('Analyzer: array validator', function t(assert) {
 test('Analyzer: object validator', function t(assert) {
   var arr = [];
 
-  arr = [{a: 1}, [4,5,6], {b: 2}, {c: 3}, {d: 4}, {d: 5}].map(mapArr);
+  arr = [{a: 1}, [4, 5, 6], {b: 2}, {c: 3}, {d: 4}, {d: 5}].map(mapArr);
   assert.equal(
     Analyzer.computeColMeta(arr)[0].type,
     'OBJECT',
@@ -114,6 +117,13 @@ test('Analyzer: number validator', function t(assert) {
     'Inteprets values as integers'
   );
 
+  arr = [NaN, NaN, NaN, 1, '222,222', '-333,333,333', -4, '+5,000'].map(mapArr);
+  assert.equal(
+    Analyzer.computeColMeta(arr)[0].type,
+    'INT',
+    'Treats NaNs as nulls and inteprets values as integer'
+  );
+
   arr = ['-.1111', '+.2', '+3,333.3333', 444.4444, '5,555,555.5'].map(mapArr);
   assert.equal(
     Analyzer.computeColMeta(arr)[0].type,
@@ -122,13 +132,37 @@ test('Analyzer: number validator', function t(assert) {
   );
 
   arr = [
-    1, '222,222', '-333,333,333', -4, '+5,000',
-    '-.1111', '+.2', '+3,333.3333', 444.4444, '5,555,555.5'
+    1,
+    '222,222',
+    '-333,333,333',
+    -4,
+    '+5,000',
+    '-.1111',
+    '+.2',
+    '+3,333.3333',
+    444.4444,
+    '5,555,555.5'
   ].map(mapArr);
   assert.equal(
     Analyzer.computeColMeta(arr)[0].type,
     'FLOAT',
     'Inteprets a mix of int and float values as floats'
+  );
+
+  arr = [
+    NaN,
+    NaN,
+    NaN,
+    '-.1111',
+    '+.2',
+    '+3,333.3333',
+    444.4444,
+    '5,555,555.5'
+  ].map(mapArr);
+  assert.equal(
+    Analyzer.computeColMeta(arr)[0].type,
+    'FLOAT',
+    'Treats NaNs as nulls still inteprets values as floats'
   );
 
   arr = ['$1', '$0.12', '$1.12', '$1,000.12', '$1,000.12'].map(mapArr);
@@ -151,15 +185,31 @@ test('Analyzer: number validator', function t(assert) {
     'Inteprets values as percents'
   );
 
+  arr = [
+    '\\N',
+    '\\N',
+    '\\N',
+    '10.12345%',
+    '-10.222%',
+    '+1,000.33%',
+    '10.4%',
+    '10.55%'
+  ].map(mapArr);
+  assert.equal(
+    Analyzer.computeColMeta(arr)[0].type,
+    'PERCENT',
+    'Ignore database nulls, and inteprets values as percents'
+  );
+
   [2.3, '+4,000', '-5,023.234', '2.3e+2', '$23,203', '23.45%'].forEach(
     function loopAcrossExamples(ex) {
       arr = [ex, ex, ex, ex, ex, ex].map(mapArr);
       assert.equal(
         Analyzer.computeColMeta(arr)[0].category,
         'MEASURE',
-        'Inteprets sci or money valeus, eg '
-        + ex +
-        ' formatted values as numbers'
+        'Inteprets sci or money valeus, eg ' +
+          ex +
+          ' formatted values as numbers'
       );
     }
   );
@@ -180,9 +230,20 @@ test('Analyzer: number validator', function t(assert) {
   );
 
   arr = [
-    1, '222,222', '-333,333,333', -4, '+5,000',
-    '-.1111', '+.2', '+3,333.3333', 444.4444, '5,555,555.5',
-    '182891173641581479', '2e53', '1e16', 182891173641581479
+    1,
+    '222,222',
+    '-333,333,333',
+    -4,
+    '+5,000',
+    '-.1111',
+    '+.2',
+    '+3,333.3333',
+    444.4444,
+    '5,555,555.5',
+    '182891173641581479',
+    '2e53',
+    '1e16',
+    182891173641581479
   ].map(mapArr);
   assert.equal(
     Analyzer.computeColMeta(arr)[0].type,
@@ -227,6 +288,30 @@ test('Analyzer: string validator', function t(assert) {
       Analyzer.computeColMeta(arr)[0].type,
       'STRING',
       'Interprets ' + ex + ' strings a string'
+    );
+  });
+
+  arr = ['\\N', '\\N', '\\N', '\\N', '\\N'].map(mapArr);
+  assert.equal(
+    Analyzer.computeColMeta(arr, [], {keepUnknowns: true})[0].type,
+    'STRING',
+    'Interprets as a string'
+  );
+
+  assert.end();
+});
+
+test('Analyzer: handling of unknown types', function t(assert) {
+  var arr = [];
+
+  ['', null, undefined, ''].forEach(function loopAcrossExamples(ex) {
+    arr = [ex, ex, ex, ex, ex, ex].map(mapArr);
+    assert.equal(
+      Analyzer.computeColMeta(arr, [], {
+        keepUnknowns: true
+      })[0].type,
+      'STRING',
+      'Interprets ' + ex + ' as a string'
     );
   });
 
