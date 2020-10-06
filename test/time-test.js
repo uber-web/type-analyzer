@@ -134,6 +134,30 @@ test('Analyzer: date validator', function t(assert) {
   result = Analyzer.computeColMeta(arr);
   assert.equal(result[0].type, 'DATETIME', 'Interprets col as datetime correctly');
 
+  arr = [
+    {col: new Date(2016, 1, 1)},
+    {col: new Date(2017, 2, 2)},
+    {col: new Date(2018, 3, 3)}
+  ];
+  result = Analyzer.computeColMeta(arr);
+  assert.equal(result[0].type, 'DATE_OBJECT', 'Interprets valid Dates created w/ component ctor as date objects');
+
+  arr = [
+    {col: new Date('2016-07-24T19:53:38.000Z')},
+    {col: new Date('2016-07-24T12:55:36.000Z')},
+    {col: new Date('2016-07-24T19:55:36.000Z')}
+  ];
+  result = Analyzer.computeColMeta(arr);
+  assert.equal(result[0].type, 'DATE_OBJECT', 'Interprets valid Dates created w/ timestamp ctor as date objects');
+
+  arr = [
+    {col: new Date('this is')},
+    {col: new Date('not a')},
+    {col: new Date('valid date')}
+  ];
+  result = Analyzer.computeColMeta(arr);
+  assert.equal(result[0].type, 'DATE_OBJECT', 'Interprets invalid Dates as date objects');
+
   assert.end();
 });
 /* eslint-enable max-statements*/

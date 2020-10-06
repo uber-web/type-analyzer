@@ -48,6 +48,7 @@ var CONSTANT = {
     // object format
     NONE: 'NONE',
     ARRAY: 'ARRAY',
+    DATE_OBJECT: 'DATE_OBJECT',
     OBJECT: 'OBJECT'
   },
 
@@ -118,6 +119,7 @@ CONSTANT.VALIDATORS = [
   // true/false, 0/1
   CONSTANT.DATA_TYPES.BOOLEAN,
   CONSTANT.DATA_TYPES.ARRAY,
+  CONSTANT.DATA_TYPES.DATE_OBJECT,
   CONSTANT.DATA_TYPES.OBJECT,
 
   // prefix/postfix rules

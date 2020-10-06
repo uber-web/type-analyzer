@@ -36,6 +36,7 @@ VALIDATOR_MAP[DATA_TYPES.PAIR_GEOMETRY_FROM_STRING] =
 // basic boolean: true/false, 0/1
 VALIDATOR_MAP[DATA_TYPES.BOOLEAN] = Utils.isBoolean;
 VALIDATOR_MAP[DATA_TYPES.ARRAY] = Utils.isArray;
+VALIDATOR_MAP[DATA_TYPES.DATE_OBJECT] = Utils.isDateObject;
 VALIDATOR_MAP[DATA_TYPES.OBJECT] = Utils.isObject;
 
 // prefix/postfix rules: '$30.00', '10.05%'

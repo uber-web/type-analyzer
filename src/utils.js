@@ -100,6 +100,11 @@ var Utils = {
     return Array.isArray(value);
   },
 
+  isDateObject: function isDateObject(value) {
+    // Note: invalid Dates return true as well as valid Dates.
+    return value instanceof Date;
+  },
+
   isObject: function isObject(value) {
     return value === Object(value) && typeof value !== 'function' && !Array.isArray(value)
   },
