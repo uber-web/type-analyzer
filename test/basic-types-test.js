@@ -91,6 +91,15 @@ test('Analyzer: array validator', function t(assert) {
     'Should interpret as Array, if data contain js array'
   );
 
+  arr = [[1, 2, 3], [4, 5, 6], [7, 8, 9], ['1', 'b'], ['2', 3], ['he']]
+    .map((v) => JSON.stringify(v))
+    .map(mapArr);
+  assert.equal(
+    Analyzer.computeColMeta(arr)[0].type,
+    'ARRAY',
+    'Should interpret as Array, if data contain js stringify array'
+  );
+
   assert.end();
 });
 

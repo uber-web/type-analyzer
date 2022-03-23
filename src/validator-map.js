@@ -42,14 +42,14 @@ VALIDATOR_MAP[DATA_TYPES.DATE_OBJECT] = Utils.isDateObject;
 VALIDATOR_MAP[DATA_TYPES.CURRENCY] = Utils.buildRegexCheck('isCurrency');
 VALIDATOR_MAP[DATA_TYPES.PERCENT] = Utils.buildRegexCheck('isPercentage');
 
+// basic
+VALIDATOR_MAP[DATA_TYPES.ARRAY] = Utils.isArray;
+VALIDATOR_MAP[DATA_TYPES.OBJECT] = Utils.isObject;
 // times
 VALIDATOR_MAP[DATA_TYPES.DATETIME] = Utils.buildRegexCheck('isDateTime');
 
 VALIDATOR_MAP[DATA_TYPES.DATE] = Utils.buildRegexCheck('isDate');
 VALIDATOR_MAP[DATA_TYPES.TIME] = Utils.buildRegexCheck('isTime');
-
-VALIDATOR_MAP[DATA_TYPES.ARRAY] = Utils.isArray;
-VALIDATOR_MAP[DATA_TYPES.OBJECT] = Utils.isObject;
 
 // VALIDATOR_MAP[DATA_TYPES.DATETIME] = Utils.whichFormatDateTime;
 //
