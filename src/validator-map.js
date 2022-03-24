@@ -30,24 +30,27 @@ var VALIDATOR_MAP = {};
 VALIDATOR_MAP[DATA_TYPES.GEOMETRY] = Utils.isGeographic;
 VALIDATOR_MAP[DATA_TYPES.GEOMETRY_FROM_STRING] =
   Utils.buildRegexCheck('isStringGeometry');
-VALIDATOR_MAP[DATA_TYPES.PAIR_GEOMETRY_FROM_STRING] =
-  Utils.buildRegexCheck('isPairwisePointGeometry');
+VALIDATOR_MAP[DATA_TYPES.PAIR_GEOMETRY_FROM_STRING] = Utils.buildRegexCheck(
+  'isPairwisePointGeometry'
+);
 
 // basic boolean: true/false, 0/1
 VALIDATOR_MAP[DATA_TYPES.BOOLEAN] = Utils.isBoolean;
-VALIDATOR_MAP[DATA_TYPES.ARRAY] = Utils.isArray;
 VALIDATOR_MAP[DATA_TYPES.DATE_OBJECT] = Utils.isDateObject;
-VALIDATOR_MAP[DATA_TYPES.OBJECT] = Utils.isObject;
 
 // prefix/postfix rules: '$30.00', '10.05%'
 VALIDATOR_MAP[DATA_TYPES.CURRENCY] = Utils.buildRegexCheck('isCurrency');
 VALIDATOR_MAP[DATA_TYPES.PERCENT] = Utils.buildRegexCheck('isPercentage');
 
+// basic
+VALIDATOR_MAP[DATA_TYPES.ARRAY] = Utils.isArray;
+VALIDATOR_MAP[DATA_TYPES.OBJECT] = Utils.isObject;
 // times
 VALIDATOR_MAP[DATA_TYPES.DATETIME] = Utils.buildRegexCheck('isDateTime');
 
 VALIDATOR_MAP[DATA_TYPES.DATE] = Utils.buildRegexCheck('isDate');
 VALIDATOR_MAP[DATA_TYPES.TIME] = Utils.buildRegexCheck('isTime');
+
 // VALIDATOR_MAP[DATA_TYPES.DATETIME] = Utils.whichFormatDateTime;
 //
 // VALIDATOR_MAP[DATA_TYPES.DATE] = Utils.whichFormatDate;
@@ -63,7 +66,7 @@ function isInt(value) {
   }
 
   return false;
-};
+}
 VALIDATOR_MAP[DATA_TYPES.INT] = isInt;
 
 // 1.1, 2.2, 3.3

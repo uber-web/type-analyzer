@@ -26,11 +26,11 @@ var TimeRegex = require('./time-regex');
 /* eslint-disable max-len*/
 
 /**
-* Generate a function to discover which time format a value is
-* @param {Regex} formatRegex - the filter to be checked and processed
-* @param {Object} regexMap - Map between regex and associated format
-* @return {Func} to the format checker
-*/
+ * Generate a function to discover which time format a value is
+ * @param {Regex} formatRegex - the filter to be checked and processed
+ * @param {Object} regexMap - Map between regex and associated format
+ * @return {Func} to the format checker
+ */
 function whichFormatGenerator(formatRegex, regexMap) {
   return function whichFormat(value) {
     if (formatRegex.test(value)) {
@@ -48,9 +48,67 @@ function whichFormatGenerator(formatRegex, regexMap) {
   };
 }
 
-var whichFormatTime = whichFormatGenerator(TimeRegex.ALL_TIME_FORMAT_REGEX, TimeRegex.TIME_FORMAT_REGEX_MAP);
-var whichFormatDate = whichFormatGenerator(TimeRegex.DATE_FORMAT_REGEX, TimeRegex.DATE_FORMAT_REGEX_MAP);
-var whichFormatDateTime = whichFormatGenerator(TimeRegex.ALL_DATE_TIME_REGEX, TimeRegex.DATE_TIME_MAP);
+var whichFormatTime = whichFormatGenerator(
+  TimeRegex.ALL_TIME_FORMAT_REGEX,
+  TimeRegex.TIME_FORMAT_REGEX_MAP
+);
+var whichFormatDate = whichFormatGenerator(
+  TimeRegex.DATE_FORMAT_REGEX,
+  TimeRegex.DATE_FORMAT_REGEX_MAP
+);
+var whichFormatDateTime = whichFormatGenerator(
+  TimeRegex.ALL_DATE_TIME_REGEX,
+  TimeRegex.DATE_TIME_MAP
+);
+
+// is a json string
+function tryParseJsonString(str) {
+  let parsed;
+  try {
+    parsed = JSON.parse(str);
+  } catch (e) {
+    return false;
+  }
+  return parsed;
+}
+
+function isString(value) {
+  return typeof value === 'string';
+}
+
+function isObject(value) {
+  return (
+    value === Object(value) &&
+    typeof value !== 'function' &&
+    !Array.isArray(value)
+  );
+}
+
+function isObjectString(str) {
+  if (!isString(str)) {
+    return false;
+  }
+  if (!RegexList.isObject.test(str)) {
+    return false;
+  }
+  const parsed = tryParseJsonString(str);
+  return Boolean(parsed && isObject(parsed));
+}
+
+function isArray(value) {
+  return Array.isArray(value);
+}
+
+function isArrayString(str) {
+  if (!isString(str)) {
+    return false;
+  }
+  if (!RegexList.isArray.test(str)) {
+    return false;
+  }
+  const parsed = tryParseJsonString(str);
+  return Boolean(parsed && isArray(parsed));
+}
 
 var Utils = {
   buildRegexCheck: function buildRegexCheck(regexId) {
@@ -61,13 +119,13 @@ var Utils = {
 
   detectTimeFormat: function detectTimeFormat(value, type) {
     switch (type) {
-    case CONSTANT.DATA_TYPES.DATETIME:
-      return whichFormatDateTime(value);
-    case CONSTANT.DATA_TYPES.DATE:
-    default:
-      return whichFormatDate(value);
-    case CONSTANT.DATA_TYPES.TIME:
-      return whichFormatTime(value);
+      case CONSTANT.DATA_TYPES.DATETIME:
+        return whichFormatDateTime(value);
+      case CONSTANT.DATA_TYPES.DATE:
+      default:
+        return whichFormatDate(value);
+      case CONSTANT.DATA_TYPES.TIME:
+        return whichFormatTime(value);
     }
   },
 
@@ -81,23 +139,27 @@ var Utils = {
   },
 
   isBoolean: function isBoolean(value) {
-    return CONSTANT.BOOLEAN_TRUE_VALUES
-      .concat(CONSTANT.BOOLEAN_FALSE_VALUES)
-      .indexOf(String(value).toLowerCase()) > -1;
+    return (
+      CONSTANT.BOOLEAN_TRUE_VALUES.concat(
+        CONSTANT.BOOLEAN_FALSE_VALUES
+      ).indexOf(String(value).toLowerCase()) > -1
+    );
   },
 
   isGeographic: function isGeographic(value) {
-    return Boolean(value) && typeof value === 'object' &&
-        value.hasOwnProperty('type') && value.hasOwnProperty('coordinates');
+    return (
+      Boolean(value) &&
+      typeof value === 'object' &&
+      value.hasOwnProperty('type') &&
+      value.hasOwnProperty('coordinates')
+    );
   },
 
   // string types
-  isString: function isString(value) {
-    return typeof value === 'string';
-  },
+  isString: isString,
 
-  isArray: function isArray(value) {
-    return Array.isArray(value);
+  isArray: function _isArray(value) {
+    return Boolean(isArray(value) || isArrayString(value));
   },
 
   isDateObject: function isDateObject(value) {
@@ -105,8 +167,8 @@ var Utils = {
     return value instanceof Date;
   },
 
-  isObject: function isObject(value) {
-    return value === Object(value) && typeof value !== 'function' && !Array.isArray(value)
+  isObject: function _isObject(value) {
+    return Boolean(isObject(value) || isObjectString(value));
   },
 
   whichFormatTime: whichFormatTime,

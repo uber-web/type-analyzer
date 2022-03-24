@@ -55,8 +55,13 @@ var RegexList = {
   isStringGeometry:
     /^(POINT|LINESTRING|POLYGON|MULTIPOINT|MULTILINESTRING|MULTIPOLYGON)/,
 
-  isPairwisePointGeometry:
-    /(\+|\-)?\d*\.\d*,( )?(\+|\-)?\d*\.\d*/
+  isPairwisePointGeometry: /(\+|\-)?\d*\.\d*,( )?(\+|\-)?\d*\.\d*/,
+
+  // accepts: string start with { and end with }
+  isObject: /^{([\s\S]*)}$/,
+
+  // accepts: string start with [ and end with ]
+  isArray: /^\[([\s\S]*)\]$/
 };
 
 module.exports = RegexList;

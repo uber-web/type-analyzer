@@ -91,6 +91,15 @@ test('Analyzer: array validator', function t(assert) {
     'Should interpret as Array, if data contain js array'
   );
 
+  arr = [[1, 2, 3], [4, 5, 6], [7, 8, 9], ['1', 'b'], ['2', 3], ['he']]
+    .map((v) => JSON.stringify(v))
+    .map(mapArr);
+  assert.equal(
+    Analyzer.computeColMeta(arr)[0].type,
+    'ARRAY',
+    'Should interpret as Array, if data contain js stringify array'
+  );
+
   assert.end();
 });
 
@@ -102,6 +111,15 @@ test('Analyzer: object validator', function t(assert) {
     Analyzer.computeColMeta(arr)[0].type,
     'OBJECT',
     'Should interpret as Object, if data contain js object'
+  );
+
+  arr = [{a: 1}, [4, 5, 6], {b: 2}, {c: 3}, {d: 4}, {d: 5}]
+    .map((v) => JSON.stringify(v))
+    .map(mapArr);
+  assert.equal(
+    Analyzer.computeColMeta(arr)[0].type,
+    'OBJECT',
+    'Should interpret as Object, if data contain json string'
   );
 
   assert.end();
