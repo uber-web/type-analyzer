@@ -319,6 +319,29 @@ test('Analyzer: string validator', function t(assert) {
   assert.end();
 });
 
+test('Analyzer: Zipcode', function t(assert) {
+  var arr = ['01059', '02280', '05003'].map(mapArr);
+  assert.equal(
+    Analyzer.computeColMeta(arr, [], {keepUnknowns: true})[0].type,
+    'ZIPCODE',
+    'Interprets 0 padded zipcode a string'
+  );
+
+  assert.end();
+});
+
+test('Analyzer: FIPS', function t(assert) {
+  // census tract
+  var arr = ['01001020801', '01001020801'].map(mapArr);
+  assert.equal(
+    Analyzer.computeColMeta(arr, [], {keepUnknowns: true})[0].type,
+    'STRING',
+    'Interprets 0 padded fips a string'
+  );
+
+  assert.end();
+});
+
 test('Analyzer: handling of unknown types', function t(assert) {
   var arr = [];
 
