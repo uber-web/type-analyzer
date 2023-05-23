@@ -60,7 +60,7 @@ VALIDATOR_MAP[DATA_TYPES.TIME] = Utils.buildRegexCheck('isTime');
 // 1, 2, 3, +40, 15,121
 const intRegexCheck = Utils.buildRegexCheck('isInt');
 function isInt(value) {
-  if (intRegexCheck(value)) {
+  if (intRegexCheck(value) || value == '0') {
     var asNum = parseInt(value.toString().replace(/(\+|,)/g, ''), 10);
     return asNum > Number.MIN_SAFE_INTEGER && asNum < Number.MAX_SAFE_INTEGER;
   }
@@ -77,8 +77,12 @@ function isFloat(value) {
 VALIDATOR_MAP[DATA_TYPES.FLOAT] = isFloat;
 
 // 1, 2.2, 3.456789e+0
+const zeroPaddedNumCheck = Utils.buildRegexCheck('isZeroPaddedNumber');
+
 VALIDATOR_MAP[DATA_TYPES.NUMBER] = function isNumeric(row) {
-  return !isNaN(row) || isInt(row) || isFloat(row);
+  return (
+    (!isNaN(row) && !zeroPaddedNumCheck(row)) || isInt(row) || isFloat(row)
+  );
 };
 
 // strings: '94101-10', 'San Francisco', 'Name'
